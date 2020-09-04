@@ -1,0 +1,108 @@
+﻿<Window x:Class="DeLauncherForm.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DeLauncherForm"
+        mc:Ignorable="d"
+        Title="DeLauncher" Height="560.000" Width="700.000" WindowStyle="SingleBorderWindow" ResizeMode="NoResize">
+    <Window.Background>
+        <ImageBrush ImageSource="Resources/background.jpg"/>
+    </Window.Background>
+    <Grid>
+        <Button x:Name="launch" Content="Launch" Margin="265,32,0,0" VerticalAlignment="Top" Height="40" FontFamily="Tahoma Bold" FontSize="20" HorizontalAlignment="Left" Width="162">
+            <Button.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#15FFFFFF" Offset="0" />
+                    <GradientStop Color="Maroon" Offset="0.5" />
+                    <GradientStop Color="#15FFFFFF" Offset="1" />
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+
+        <Button x:Name="WorldBuilder" Content="WorldBuilder" Margin="265,86,0,0" VerticalAlignment="Top" Height="40" FontFamily="Tahoma Bold" FontSize="20" HorizontalAlignment="Left" Width="162">
+            <Button.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#15FFFFFF" Offset="0" />
+                    <GradientStop Color="Maroon" Offset="0.5" />
+                    <GradientStop Color="#15FFFFFF" Offset="1" />
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+
+        <Grid x:Name="QuickStartGrid" HorizontalAlignment="Left" Margin="245,140,0,0" VerticalAlignment="Top" Height="40" Width="200">
+            <Border BorderBrush="DarkGray" BorderThickness="2"/>
+            <CheckBox x:Name="QuickStart" Content="Quick Start" FontFamily="Tahoma Bold" FontSize="20" VerticalAlignment="Top" Margin="10,6,-2,0" RenderTransformOrigin="0.751,0.864"></CheckBox>
+
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="Maroon" Offset="0.5" />
+                </LinearGradientBrush>
+            </Grid.Background>
+        </Grid>
+
+        <Grid x:Name="WindGrid" HorizontalAlignment="Left" Margin="245,190,0,0" VerticalAlignment="Top" Height="40" Width="200">
+            <Border BorderBrush="DarkGray" BorderThickness="2">
+            </Border>
+            <CheckBox x:Name="Windowed" Content="Windowed" FontFamily="Tahoma Bold" FontSize="20" VerticalAlignment="Top" Margin="8,6,0,0" RenderTransformOrigin="0.751,0.864"></CheckBox>
+
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="Maroon" Offset="0.5" />
+
+                </LinearGradientBrush>
+            </Grid.Background>
+        </Grid>
+
+        <TextBox x:Name = "Info" IsReadOnly="True" Height="32" Margin="150,244,0,0" TextWrapping="Wrap" Text="AutoUpdate Options:" FontFamily="Tahoma Bold" FontSize="18" VerticalAlignment="Top" HorizontalAlignment="Left" Width="390">
+
+            <TextBox.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="Maroon" Offset="0.5" />
+                    <GradientStop Color="#15FFFFFF" Offset="1" />
+                </LinearGradientBrush>
+            </TextBox.Background>
+
+        </TextBox>
+
+        <Grid HorizontalAlignment="Left" Margin="150,290,0,0" VerticalAlignment="Top" Height="130" Width="390">
+            <Border BorderBrush="DarkGray" BorderThickness="2"/>
+            <RadioButton x:Name="Vanilla" Content="Vanilla ROTR" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>
+            <RadioButton x:Name="BP" Content="BalancePatch" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>
+            <RadioButton x:Name="HP" Content="HanPatch" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>
+            <RadioButton x:Name="NoUpd" Content="Disable AutoUpdate" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>
+
+            <TextBox x:Name = "NoInternet" IsReadOnly="True" HorizontalAlignment="Left" Height="32" Margin="10,10,0,0" Visibility="Hidden" Text="" FontFamily="Tahoma Bold" FontSize="18" VerticalAlignment="Top" Width="350">
+            </TextBox>
+
+            <TextBox x:Name = "NoInternet2" IsReadOnly="True" HorizontalAlignment="Left" Height="32" Margin="10,50,0,0" Visibility="Hidden"  Text="" FontFamily="Tahoma Bold" FontSize="18" VerticalAlignment="Top" Width="350">
+            </TextBox>
+
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="Maroon" Offset="0.5" />
+                    <GradientStop Color="#15FFFFFF" Offset="1" />
+                </LinearGradientBrush>
+            </Grid.Background>
+        </Grid>
+
+        <Grid HorizontalAlignment="Left" Margin="10,410,0,0" VerticalAlignment="Top" Height="65" Width="120">
+            <Border BorderBrush="DarkGray" BorderThickness="2"/>
+            <RadioButton x:Name="Rus" Content="РУС" HorizontalAlignment="Left" Margin="10,8,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>
+            <RadioButton x:Name="Eng" Content="ENG" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>
+
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#15FFFFFF" Offset="1" />
+                </LinearGradientBrush>
+            </Grid.Background>
+        </Grid>
+
+        <TextBox x:Name = "VersionInfo" IsReadOnly="True" Text="0.00.00.00" HorizontalAlignment="Left" Height="29" Margin="10,485,0,0" TextWrapping="Wrap"  FontSize="16" VerticalAlignment="Top" Width="120"
+                 Background="#15FFFFFF"/>
+
+        <TextBox x:Name = "PatchInfo" IsReadOnly="True" HorizontalAlignment="Left" Height="29" Margin="150,485,0,0" TextWrapping="Wrap" Text="Updating" FontSize="15" VerticalAlignment="Top" Width="331"
+                 Background="LightGray"/>
+
+    </Grid>
+</Window>

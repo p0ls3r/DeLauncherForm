@@ -64,6 +64,7 @@ namespace DeLauncherForm
             }
         }        
 
+        //рефакторинг, сделать метод универсальным
         public static bool CheckGibForActualVersion(PatchInfo actualPatch)
         {
             //отдельный кейс для ваниллы

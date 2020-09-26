@@ -11,7 +11,7 @@ namespace DeLauncherForm
 
             Process.Start(EntryPoint.WorldBuilderFile);
 
-            var mon = new Monitor(EntryPoint.BuilderProcessTag);
+            var mon = new Monitor(EntryPoint.BuilderProcessTags);
 
             mon.StartMonitoring();
 

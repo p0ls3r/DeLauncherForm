@@ -7,10 +7,15 @@ namespace DeLauncherForm
 {
     public partial class MainWindow : Window
     {
-        private FormConfiguration conf;
-        public MainWindow(FormConfiguration cfg)
+        private FormConfiguration configuration;
+        private LaunchOptions options;
+
+        private bool noInternet = false;        
+
+        public MainWindow(FormConfiguration cfg, LaunchOptions opt)
         {
-            conf = cfg;
+            configuration = cfg;
+            options = opt;
 
             this.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
 
@@ -24,7 +29,20 @@ namespace DeLauncherForm
             else
                 CheckAndUpdate();
 
-            SetButtonsBindings();
+            
+            SetButtonsBindings();            
+        }
+
+        public void ShowWindow(FormConfiguration cfg, LaunchOptions opt)
+        {
+            this.Show();            
+            configuration = cfg;
+            options = opt;
+        }
+
+        public void ShowWindow()
+        {
+            this.Show();
         }
 
         private async void CheckAndUpdate()
@@ -39,14 +57,17 @@ namespace DeLauncherForm
         private void NoInternetSettings()
         {
             NoUpd.IsChecked = true;
-            conf.Patch = new None();
+            noInternet = true;
+            configuration.Patch = new None();
             HP.Visibility = Visibility.Collapsed;
             BP.Visibility = Visibility.Collapsed;
             Vanilla.Visibility = Visibility.Collapsed;
             Info.Visibility = Visibility.Collapsed;
 
             NoInternet.Visibility = Visibility.Visible;
-            NoInternet2.Visibility = Visibility.Visible;            
+            NoInternet2.Visibility = Visibility.Visible;
+
+            AdvancedOptions.Visibility = Visibility.Collapsed;
         }
 
         private void SetButtonsBindings()
@@ -61,32 +82,46 @@ namespace DeLauncherForm
             Eng.Click += EngSet;
             NoUpd.Click += NonUpdateSet;
             WorldBuilder.Click += LaunchWorldBuilder;
+            AdvancedOptions.Click += AdvancedOptionsWindow;
 
-            this.Closing += SaveConfig;
+            this.Closing += SaveConfigAndOptions;
+        }
+
+        private void AdvancedOptionsWindow(object sender, EventArgs e)
+        {
+            this.Hide();
+            Windows.Options optionsWindow = new Windows.Options(configuration, options)
+            {
+                WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen,                
+            };
+
+            optionsWindow.ApplyOptions += ShowWindow;
+            optionsWindow.CloseWindow += ShowWindow;
+            optionsWindow.Show();
         }
         private void ApplyConfig()
         {
-            if (conf.QuickStart)
+            if (configuration.QuickStart)
                 QuickStart.IsChecked = true;
-            if (conf.Windowed)
+            if (configuration.Windowed)
                 Windowed.IsChecked = true;
 
-            if (conf.Patch is HPatch)
+            if (configuration.Patch is HPatch)
                 HP.IsChecked = true;
-            if (conf.Patch is BPatch)
+            if (configuration.Patch is BPatch)
                 BP.IsChecked = true;
-            if (conf.Patch is Vanilla)
+            if (configuration.Patch is Vanilla)
                 Vanilla.IsChecked = true;
-            if (conf.Patch is None)
+            if (configuration.Patch is None)
                 NoUpd.IsChecked = true;
 
-            if(conf.Lang == DeLauncherForm.Language.Eng)
+            if(configuration.Lang == DeLauncherForm.Language.Eng)
             {
                 Eng.IsChecked = true;
                 SetEngLang();
             }
 
-            if (conf.Lang == DeLauncherForm.Language.Rus)
+            if (configuration.Lang == DeLauncherForm.Language.Rus)
             {
                 Rus.IsChecked = true;
                 SetRusLang();
@@ -111,6 +146,8 @@ namespace DeLauncherForm
 
             NoInternet.Text = "Нет доступа к репозиторию";
             NoInternet2.Text = "Автообновления недоступны!";
+
+            AdvancedOptions.Content = "Дополнительные опции";
         }
 
         private void SetEngLang()
@@ -129,57 +166,82 @@ namespace DeLauncherForm
 
             NoInternet.Text = "No connection to repository";
             NoInternet2.Text = "Updates are not available!";
+
+            AdvancedOptions.Content = "Advanced options";
         }
-        private void SaveConfig(object sender, EventArgs e)
+
+        private void SaveConfigAndOptions(object sender, EventArgs e)
         {
-            ConfigurationReader.SaveConfiguration(conf);
+            XMLReader.SaveConfiguration(configuration);
+            XMLReader.SaveOptions(options);
         }
 
         private async void LaunchWorldBuilder(object sender, RoutedEventArgs e)
         {
             this.Hide();
             await Task.Run(() => WorldBuilderLauncher.LaunchWorldBuilder());
-            SaveConfig(this, null);
+            SaveConfigAndOptions(this, null);
             this.Close();
         }
 
-        private void Launch(object sender, RoutedEventArgs e)
+        private async Task CheckAndApplyOptions()
         {
+            this.Hide();
+            DeLauncherForm.Windows.ApplyingOptions optionsWindow = new DeLauncherForm.Windows.ApplyingOptions(configuration);
+            optionsWindow.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+
+            optionsWindow.Show();
+
+            await GentoolsUpdater.CheckAndUpdateGentools(options);
+            await OptionsSetter.CheckAndApplyOptions(options);
+
+            optionsWindow.Close();
+        }
+
+        private void Launch(object sender, RoutedEventArgs e)
+        {            
             var curVersion = LocalFilesWorker.GetCurrentPatchInfo();
 
-            if (conf.Patch is None)
+            if (configuration.Patch is None)
             {
-                LaunchWithoutUpdate(conf, curVersion);
+                LaunchWithoutUpdate(configuration, curVersion);
                 return;
             }
             
-            var reposVersion = ReposWorker.GetLatestPatchInfo(conf);            
+            var reposVersion = ReposWorker.GetLatestPatchInfo(configuration);            
 
-            if (curVersion.Patch.Name == conf.Patch.Name && curVersion.Patch.PatchVersion == reposVersion.Patch.PatchVersion)
+            if (curVersion.Patch.Name == configuration.Patch.Name && curVersion.Patch.PatchVersion == reposVersion.Patch.PatchVersion)
             {
-                LaunchWithoutUpdate(conf, curVersion);
+                LaunchWithoutUpdate(configuration, curVersion);
                 return;
             }
 
             if (LocalFilesWorker.CheckGibForActualVersion(reposVersion))
             {
-                LaunchWithoutUpdate(conf, reposVersion);
+                LaunchWithoutUpdate(configuration, reposVersion);
                 return;
             }
 
-            LaunchWithUpdate(conf);           
+            LaunchWithUpdate(configuration);           
         }
+
         private async void LaunchWithoutUpdate(FormConfiguration conf, PatchInfo info)
         {
+            if (!noInternet)
+                await CheckAndApplyOptions();
+
             this.Hide();
             await Task.Run(() => GameLauncher.PrepareWithoutUpdate(conf, info));
-            await Task.Run(() => GameLauncher.Launch(conf));
-            SaveConfig(this, null);
+            await Task.Run(() => GameLauncher.Launch(conf, options));
+            SaveConfigAndOptions(this, null);
             this.Close();
         }
 
         private async void LaunchWithUpdate(FormConfiguration conf)
         {
+            if (!noInternet)
+                await CheckAndApplyOptions();
+
             DownloadWindow downloadWindow = new DownloadWindow(conf);
             downloadWindow.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
 
@@ -190,9 +252,9 @@ namespace DeLauncherForm
 
             await GameLauncher.PrepareWithUpdate(conf);
             downloadWindow.Hide();
-            await Task.Run(() => GameLauncher.Launch(conf));
+            await Task.Run(() => GameLauncher.Launch(conf, options));
 
-            SaveConfig(this, null);
+            SaveConfigAndOptions(this, null);
             downloadWindow.Close();
             this.Close();
         }
@@ -200,43 +262,43 @@ namespace DeLauncherForm
 
         private void WindowSet(object sender, RoutedEventArgs e)
         {
-            conf.Windowed = !conf.Windowed;
+            configuration.Windowed = !configuration.Windowed;
         }
 
         private void QuickStartSet(object sender, RoutedEventArgs e)
         {
-            conf.QuickStart = !conf.QuickStart;
+            configuration.QuickStart = !configuration.QuickStart;
         }
 
         private void BPSet(object sender, RoutedEventArgs e)
         {
-            conf.Patch = new BPatch();
+            configuration.Patch = new BPatch();
         }
 
         private void HPSet(object sender, RoutedEventArgs e)
         {
-            conf.Patch = new HPatch();
+            configuration.Patch = new HPatch();
         }
 
         private void VanillaSet(object sender, RoutedEventArgs e)
         {
-            conf.Patch = new Vanilla();
+            configuration.Patch = new Vanilla();
         }
 
         private void NonUpdateSet(object sender, RoutedEventArgs e)
         {
-            conf.Patch = new None();
+            configuration.Patch = new None();
         }
 
         private void RusSet(object sender, RoutedEventArgs e)
         {
-            conf.Lang = DeLauncherForm.Language.Rus;
+            configuration.Lang = DeLauncherForm.Language.Rus;
             SetRusLang();
         }
 
         private void EngSet(object sender, RoutedEventArgs e)
         {
-            conf.Lang = DeLauncherForm.Language.Eng;
+            configuration.Lang = DeLauncherForm.Language.Eng;
             SetEngLang();
         }
     }

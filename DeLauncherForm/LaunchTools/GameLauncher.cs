@@ -1,27 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+﻿using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace DeLauncherForm
 {
     static class GameLauncher
-    {        
-        public static async Task PrepareWithUpdate(FormConfiguration conf)
+    {               
+        public static void Launch(FormConfiguration conf, LaunchOptions options)
         {
             SetRotrFiles();
-            LocalFilesWorker.RemoveOldVersions(conf, null);
-            await ReposWorker.LoadActualPatch(conf);
-        }
 
-        public static void Launch(FormConfiguration conf)
-        {
-            StartGame(conf);
+            StartGame(conf, options);
 
-            var mon = new Monitor(EntryPoint.GameProcessTag);
+            var mon = new Monitor(EntryPoint.GameProcessTags);
             mon.StartMonitoring();
 
             while (!mon.IsArrived)
@@ -32,9 +23,13 @@ namespace DeLauncherForm
             SetRotrFilesBack();
         }
 
+        public static async Task PrepareWithUpdate(FormConfiguration conf)
+        {            
+            LocalFilesWorker.RemoveOldVersions(conf, null);
+            await ReposWorker.LoadActualPatch(conf);
+        }
         public static void PrepareWithoutUpdate(FormConfiguration conf, PatchInfo exceptionFile)
-        {
-            SetRotrFiles();
+        {            
             LocalFilesWorker.RemoveOldVersions(conf, exceptionFile);
         }
 
@@ -48,7 +43,7 @@ namespace DeLauncherForm
             LocalFilesWorker.SetROTRFilesBack();
         }
 
-        private static void StartGame(FormConfiguration conf)
+        private static void StartGame(FormConfiguration conf, LaunchOptions options)
         {            
             var parameters = "";
 
@@ -57,7 +52,10 @@ namespace DeLauncherForm
             if (conf.QuickStart)
                 parameters += "-quickstart";
 
-            Process.Start(EntryPoint.GameFile, parameters);
+            if(!options.ModdedExe)
+                Process.Start(EntryPoint.GameFile, parameters);
+            else
+                Process.Start(EntryPoint.ModdedGameFile, parameters);
         }
     }
 }

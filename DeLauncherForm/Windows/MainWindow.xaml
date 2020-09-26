@@ -86,6 +86,15 @@
             </Grid.Background>
         </Grid>
 
+        <Button x:Name="AdvancedOptions" Content="Advanced Options" Margin="150,434,0,0" VerticalAlignment="Top" Height="40" FontFamily="Tahoma Bold" FontSize="20" HorizontalAlignment="Left" Width="270">
+            <Button.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,4">
+                    <GradientStop Color="Maroon" Offset="0.5" />
+                    <GradientStop Color="#15FFFFFF" Offset="1" />
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+
         <Grid HorizontalAlignment="Left" Margin="10,410,0,0" VerticalAlignment="Top" Height="65" Width="120">
             <Border BorderBrush="DarkGray" BorderThickness="2"/>
             <RadioButton x:Name="Rus" Content="РУС" HorizontalAlignment="Left" Margin="10,8,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>

@@ -17,3 +17,7 @@ C:\Users\HP\source\repos\DeLauncherForm\DeLauncherForm\obj\Debug\Windows\MainWin
 C:\Users\HP\source\repos\DeLauncherForm\DeLauncherForm\obj\Debug\Windows\AbortWindow.baml
 C:\Users\HP\source\repos\DeLauncherForm\DeLauncherForm\obj\Debug\Windows\DownloadWindow.baml
 C:\Users\HP\source\repos\DeLauncherForm\DeLauncherForm\obj\Debug\Windows\MainWindow.baml
+C:\Users\HP\source\repos\DeLauncherForm\DeLauncherForm\obj\Debug\Windows\Options.g.cs
+C:\Users\HP\source\repos\DeLauncherForm\DeLauncherForm\obj\Debug\Windows\Options.baml
+C:\Users\HP\source\repos\DeLauncherForm\DeLauncherForm\obj\Debug\Windows\ApplyingOptions.g.cs
+C:\Users\HP\source\repos\DeLauncherForm\DeLauncherForm\obj\Debug\Windows\ApplyingOptions.baml

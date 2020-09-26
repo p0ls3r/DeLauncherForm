@@ -1,4 +1,5 @@
 ﻿using System.Management;
+using System.Collections.Generic;
 
 namespace DeLauncherForm
 {
@@ -6,7 +7,7 @@ namespace DeLauncherForm
     {
         public bool IsArrived = false;
         ManagementEventWatcher stopWatch;
-        private string ProcessName;
+        private List<string> ProcessName;
 
         public void StartMonitoring()
         {
@@ -18,11 +19,11 @@ namespace DeLauncherForm
         private void stopWatch_EventArrived(object sender, EventArrivedEventArgs e)
         {
             var processName = (string)e.NewEvent.Properties["ProcessName"].Value;
-            if (processName.Contains(ProcessName))
+            if (ProcessName.Contains(processName))
                 IsArrived = true;
         }
 
-        public Monitor(string processName)
+        public Monitor(List<string> processName)
         {
             ProcessName = processName;  
         }

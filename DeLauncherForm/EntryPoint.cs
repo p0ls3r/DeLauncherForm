@@ -18,14 +18,14 @@ namespace DeLauncherForm
         public const string GameFile = "generals.exe";
         public const string ModdedGameFile = "modded.exe";
 
-        //public const string GameFile = "Kat.exe";
-        //public const string ModdedGameFile = "Kat.exe";
+        public const string HPLogURL = "https://docs.google.com/document/d/1ZMlVFDPf4SDD5Y6vYatOCtaudBBl32gdWg-YrswvnGo/edit?usp=sharing";
+        public const string BPLogURL = "";
 
-        //public static List<string> GameProcessTags = new List<string> { "Kat.exe" };
-        public static List<string> GameProcessTags = new List<string> { "generals.exe", "Generals.exe", "generals", "Generals", "modded.exe", "modded" };
+        //public const string GameFile = "ConsoleApp1.exe";
+        //public const string ModdedGameFile = "ConsoleApp1.exe";
+
         public const string WorldBuilderFile  = "WorldBuilder.exe";
-        public static List<string> BuilderProcessTags  = new List<string> { "WorldBuilder.exe", "worldBuilder.exe", "worldbuilder.exe", "WorldBuilder", "worldBuilder", "worldbuilder" };
-
+        
         public const string HPLink = "alanblack166/Hanpatch";
         public const string BPLink = "Knjaz136/BPatch";
         public const string VanillaLink = "p0ls3r/ROTR187";

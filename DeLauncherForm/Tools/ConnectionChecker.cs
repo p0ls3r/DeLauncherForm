@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.IO;
+using System.Net.Http;
 
 namespace DeLauncherForm
 {
@@ -13,46 +14,20 @@ namespace DeLauncherForm
         public enum ConnectionStatus
         {
             NotConnected,
-            LimitedAccess,
             Connected
         }
 
-        public static ConnectionStatus CheckInternet()
+        public static async Task<ConnectionStatus> CheckConnection(string url)
         {
+            System.Net.Http.HttpClient client = new HttpClient();
+
             try
             {
-                IPHostEntry entry = Dns.GetHostEntry("github.com");
-                IPHostEntry entry2 = Dns.GetHostEntry("dns.msftncsi.com");
-                if (entry.AddressList.Length == 0 || entry2.AddressList.Length == 0)
-                {
-                    return ConnectionStatus.NotConnected;
-                }
-            }
-            catch
-            {
-                return ConnectionStatus.NotConnected;
-            }
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+                HttpResponseMessage response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
 
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create("http://www.msftncsi.com/ncsi.txt");
-            try
-            {
-                HttpWebResponse responce = (HttpWebResponse)request.GetResponse();
-
-                if (responce.StatusCode != HttpStatusCode.OK)
-                {
-                    return ConnectionStatus.LimitedAccess;
-                }
-                using (StreamReader sr = new StreamReader(responce.GetResponseStream()))
-                {
-                    if (sr.ReadToEnd().Equals("Microsoft NCSI"))
-                    {
-                        return ConnectionStatus.Connected;
-                    }
-                    else
-                    {
-                        return ConnectionStatus.LimitedAccess;
-                    }
-                }
+                return ConnectionStatus.Connected;
             }
             catch
             {

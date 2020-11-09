@@ -28,9 +28,7 @@ namespace DeLauncherForm.Windows
         {
             InitializeComponent();
             configuration = cfg;
-            options = opt;
-
-            
+            options = opt;            
 
             if (configuration.Lang == DeLauncherForm.Language.Rus)
                 SetRus();

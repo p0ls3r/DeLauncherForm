@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -24,11 +25,12 @@ namespace DeLauncherForm
             InitializeComponent();
             ApplyConfig();
 
-            if (ConnectionChecker.CheckInternet() == ConnectionChecker.ConnectionStatus.LimitedAccess || ConnectionChecker.CheckInternet() == ConnectionChecker.ConnectionStatus.NotConnected)
+            var connection = ConnectionChecker.CheckConnection("https://github.com/").GetAwaiter().GetResult();
+
+            if (connection == ConnectionChecker.ConnectionStatus.NotConnected)
                 NoInternetSettings();
             else
                 CheckAndUpdate();
-
             
             SetButtonsBindings();            
         }
@@ -68,6 +70,9 @@ namespace DeLauncherForm
             NoInternet2.Visibility = Visibility.Visible;
 
             AdvancedOptions.Visibility = Visibility.Collapsed;
+
+            HPchangeLog.Visibility = Visibility.Collapsed;
+            BPchangeLog.Visibility = Visibility.Collapsed;
         }
 
         private void SetButtonsBindings()
@@ -83,6 +88,8 @@ namespace DeLauncherForm
             NoUpd.Click += NonUpdateSet;
             WorldBuilder.Click += LaunchWorldBuilder;
             AdvancedOptions.Click += AdvancedOptionsWindow;
+            HPchangeLog.Click += OpenHPChangeLog;
+            BPchangeLog.Click += OpenBPChangeLog;
 
             this.Closing += SaveConfigAndOptions;
         }
@@ -99,6 +106,7 @@ namespace DeLauncherForm
             optionsWindow.CloseWindow += ShowWindow;
             optionsWindow.Show();
         }
+
         private void ApplyConfig()
         {
             if (configuration.QuickStart)
@@ -139,7 +147,7 @@ namespace DeLauncherForm
             Vanilla.Content = "Оригинальный ROTR";
             BP.Content = "БалансПатч (ИИ не работает)";
             HP.Content = "ХанПатч";
-            NoUpd.Content = "Текущий патч без загрузки";
+            NoUpd.Content = "Текущий патч без обновлений";
             Info.Text = "Выбор патча для автообновления:";
 
             PatchInfo.Text = "Текущий Файл Патча: " + LocalFilesWorker.GetCurrentPatchName();
@@ -148,18 +156,21 @@ namespace DeLauncherForm
             NoInternet2.Text = "Автообновления недоступны!";
 
             AdvancedOptions.Content = "Дополнительные опции";
+
+            HPchangeLog.Content = "Изменения";
+            BPchangeLog.Content = "Изменения";
         }
 
         private void SetEngLang()
         {
-            QuickStart.Content = "Quick start";
+            QuickStart.Content = "Quick Start";
             launch.Content = "Launch";
             Windowed.Content = "Windowed";
 
-            Vanilla.Content = "Vanilla ROTR";
+            Vanilla.Content = "Original ROTR";
             BP.Content = "BalancePatch (AI Incompatible)";
             HP.Content = "HanPatch";
-            NoUpd.Content = "Current patch without load";
+            NoUpd.Content = "Current patch without update";
             Info.Text = "Choose patch for auto update:";
 
             PatchInfo.Text = "Current patchFile: " + LocalFilesWorker.GetCurrentPatchName();
@@ -167,7 +178,10 @@ namespace DeLauncherForm
             NoInternet.Text = "No connection to repository";
             NoInternet2.Text = "Updates are not available!";
 
-            AdvancedOptions.Content = "Advanced options";
+            AdvancedOptions.Content = "Advanced Options";
+
+            HPchangeLog.Content = "ChangeLog";
+            BPchangeLog.Content = "ChangeLog";
         }
 
         private void SaveConfigAndOptions(object sender, EventArgs e)
@@ -179,7 +193,7 @@ namespace DeLauncherForm
         private async void LaunchWorldBuilder(object sender, RoutedEventArgs e)
         {
             this.Hide();
-            await Task.Run(() => WorldBuilderLauncher.LaunchWorldBuilder());
+            await Task.Run(() => WorldBuilderLauncher.LaunchWorldBuilder(configuration));
             SaveConfigAndOptions(this, null);
             this.Close();
         }
@@ -192,7 +206,16 @@ namespace DeLauncherForm
 
             optionsWindow.Show();
 
-            await GentoolsUpdater.CheckAndUpdateGentools(options);
+            var succes = await GentoolsUpdater.CheckAndUpdateGentools(options);
+
+            if (!succes)
+            {
+                DeLauncherForm.Windows.GentoolUpdateFailed gentoolFailedWindow = new Windows.GentoolUpdateFailed(configuration);
+                gentoolFailedWindow.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+
+                gentoolFailedWindow.ShowDialog();            
+            }
+
             await OptionsSetter.CheckAndApplyOptions(options);
 
             optionsWindow.Close();
@@ -289,6 +312,17 @@ namespace DeLauncherForm
         {
             configuration.Patch = new None();
         }
+
+        private void OpenHPChangeLog(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(EntryPoint.HPLogURL);
+        }
+
+        private void OpenBPChangeLog(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(EntryPoint.BPLogURL);
+        }
+
 
         private void RusSet(object sender, RoutedEventArgs e)
         {

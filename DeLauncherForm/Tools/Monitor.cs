@@ -7,7 +7,7 @@ namespace DeLauncherForm
     {
         public bool IsArrived = false;
         ManagementEventWatcher stopWatch;
-        private List<string> ProcessName;
+        private int targetProcessID;
 
         public void StartMonitoring()
         {
@@ -18,14 +18,15 @@ namespace DeLauncherForm
 
         private void stopWatch_EventArrived(object sender, EventArrivedEventArgs e)
         {
-            var processName = (string)e.NewEvent.Properties["ProcessName"].Value;
-            if (ProcessName.Contains(processName))
+            var processId = (uint)e.NewEvent.Properties["ProcessId"].Value;
+            
+            if (processId == targetProcessID)
                 IsArrived = true;
         }
 
-        public Monitor(List<string> processName)
+        public Monitor(int id)
         {
-            ProcessName = processName;  
+            targetProcessID = id;
         }
     }
 }

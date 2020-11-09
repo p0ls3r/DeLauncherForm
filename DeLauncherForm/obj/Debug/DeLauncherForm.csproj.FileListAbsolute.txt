@@ -21,3 +21,5 @@ C:\Users\HP\source\repos\DeLauncherForm\DeLauncherForm\obj\Debug\Windows\Options
 C:\Users\HP\source\repos\DeLauncherForm\DeLauncherForm\obj\Debug\Windows\Options.baml
 C:\Users\HP\source\repos\DeLauncherForm\DeLauncherForm\obj\Debug\Windows\ApplyingOptions.g.cs
 C:\Users\HP\source\repos\DeLauncherForm\DeLauncherForm\obj\Debug\Windows\ApplyingOptions.baml
+C:\Users\HP\source\repos\DeLauncherForm\DeLauncherForm\obj\Debug\Windows\GentoolUpdateFailed.g.cs
+C:\Users\HP\source\repos\DeLauncherForm\DeLauncherForm\obj\Debug\Windows\GentoolUpdateFailed.baml

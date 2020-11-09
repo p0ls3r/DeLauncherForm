@@ -5,13 +5,13 @@ namespace DeLauncherForm
 {
     public static class WorldBuilderLauncher
     {
-        public static void LaunchWorldBuilder()
+        public static void LaunchWorldBuilder(FormConfiguration conf)
         {
             GameLauncher.SetRotrFiles();
 
-            Process.Start(EntryPoint.WorldBuilderFile);
+            var processID = Process.Start(EntryPoint.WorldBuilderFile).Id;
 
-            var mon = new Monitor(EntryPoint.BuilderProcessTags);
+            var mon = new Monitor(processID);
 
             mon.StartMonitoring();
 

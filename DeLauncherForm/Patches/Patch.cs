@@ -17,5 +17,6 @@ namespace DeLauncherForm
         public abstract string[] PatchTags { get;}
         public abstract int PatchVersion { get; set; }
         public abstract string Repository { get; }
+        public abstract string[] ExceptionFiles { get; }
     }
 }

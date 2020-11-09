@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.Contracts;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,12 +9,12 @@ namespace DeLauncherForm
     static class GameLauncher
     {               
         public static void Launch(FormConfiguration conf, LaunchOptions options)
-        {
-            SetRotrFiles();
+        {            
+            SetRotrFiles();            
 
-            StartGame(conf, options);
+            var id = StartGame(conf, options);
 
-            var mon = new Monitor(EntryPoint.GameProcessTags);
+            var mon = new Monitor(id);
             mon.StartMonitoring();
 
             while (!mon.IsArrived)
@@ -34,7 +36,7 @@ namespace DeLauncherForm
         }
 
         public static void SetRotrFiles()
-        {
+        {            
             LocalFilesWorker.SetROTRFiles();
         }
 
@@ -43,7 +45,7 @@ namespace DeLauncherForm
             LocalFilesWorker.SetROTRFilesBack();
         }
 
-        private static void StartGame(FormConfiguration conf, LaunchOptions options)
+        private static int StartGame(FormConfiguration conf, LaunchOptions options)
         {            
             var parameters = "";
 
@@ -52,10 +54,15 @@ namespace DeLauncherForm
             if (conf.QuickStart)
                 parameters += "-quickstart";
 
+            Process process;
+
             if(!options.ModdedExe)
-                Process.Start(EntryPoint.GameFile, parameters);
+                process = Process.Start(EntryPoint.GameFile, parameters);
             else
-                Process.Start(EntryPoint.ModdedGameFile, parameters);
+                process = Process.Start(EntryPoint.ModdedGameFile, parameters);
+
+
+            return process.Id;
         }
     }
 }

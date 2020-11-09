@@ -9,6 +9,7 @@ namespace DeLauncherForm
         public override string Name => "Vanilla";
         public override string[] PatchTags { get; } = new string[] { "!!Rotr_Intrnl_INI", "!!Rotr_Intrnl_Eng" };
 
+        public override string[] ExceptionFiles { get; } = new string[] { };
         public override string Repository { get; } = EntryPoint.VanillaLink;
         public override int PatchVersion { get; set; } = 18720;
 

@@ -85,6 +85,9 @@
     <Compile Include="Windows\ApplyingOptions.xaml.cs">
       <DependentUpon>ApplyingOptions.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\GentoolUpdateFailed.xaml.cs">
+      <DependentUpon>GentoolUpdateFailed.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Options.xaml.cs">
       <DependentUpon>Options.xaml</DependentUpon>
     </Compile>
@@ -97,6 +100,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\DownloadWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\GentoolUpdateFailed.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -178,6 +185,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Windows\Resources\facility.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\Gentools.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

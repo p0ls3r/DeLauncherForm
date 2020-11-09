@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.IO;
 
 namespace DeLauncherForm
@@ -15,6 +16,15 @@ namespace DeLauncherForm
         public static void SetROTRFiles()
         {
             Switch("gib", "big");
+
+            var patch = GetCurrentPatchInfo().Patch;
+
+            foreach (var exceptionFile in patch.ExceptionFiles)
+            {
+                if (File.Exists(exceptionFile + ".big"))
+                    File.Move(exceptionFile + ".big", exceptionFile + ".gib");
+            }
+
             RenameScriptFiles();
             RenameWindowFiles();
         }

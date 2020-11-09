@@ -72,6 +72,24 @@
             <RadioButton x:Name="HP" Content="HanPatch" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>
             <RadioButton x:Name="NoUpd" Content="Disable AutoUpdate" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>
 
+            <Button x:Name="HPchangeLog" Content="ChangeLog" Margin="260,68,0,0" VerticalAlignment="Top" Height="30" FontFamily="Tahoma Bold" FontSize="14" HorizontalAlignment="Left" Width="120">
+                <Button.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,2">
+                        <GradientStop Color="Maroon" Offset="0.5" />
+                        <GradientStop Color="#15FFFFFF" Offset="1" />
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+
+            <Button x:Name="BPchangeLog" Content="ChangeLog" Margin="260,35,0,0" VerticalAlignment="Top" Height="30" Visibility="Hidden" FontFamily="Tahoma Bold" FontSize="14" HorizontalAlignment="Left" Width="120">
+                <Button.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,2">
+                        <GradientStop Color="Maroon" Offset="0.5" />
+                        <GradientStop Color="#15FFFFFF" Offset="1" />
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+
             <TextBox x:Name = "NoInternet" IsReadOnly="True" HorizontalAlignment="Left" Height="32" Margin="10,10,0,0" Visibility="Hidden" Text="" FontFamily="Tahoma Bold" FontSize="18" VerticalAlignment="Top" Width="350">
             </TextBox>
 

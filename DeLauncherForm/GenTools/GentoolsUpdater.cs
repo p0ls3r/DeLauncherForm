@@ -4,15 +4,14 @@ using System.Linq;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Web.Script.Serialization;
 using System.ComponentModel;
 using System.IO.Compression;
 using System.Threading.Tasks;
 
 namespace DeLauncherForm
 {
+
+    //code taken and refactored from ContraLauncher(https://github.com/ContraMod/Launcher), thanks to launcher author - tet.
     static class GentoolsUpdater
     {
         [DllImport("version.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -24,25 +23,33 @@ namespace DeLauncherForm
 
         static string genToolZipFileName = "";
         static string gentoolFileName = "d3d8.dll";
-        public static async Task CheckAndUpdateGentools(LaunchOptions options)
+        public static async Task<bool> CheckAndUpdateGentools(LaunchOptions options)
         {
             if (options.Gentool == GentoolsMode.Current)
-                return;
+                return true;
 
             if (options.Gentool == GentoolsMode.Disable)
             {
                 if (File.Exists(gentoolFileName))
                     File.Delete(gentoolFileName);
-                return;
+                return true;
             }
 
-            genToolZipFileName = GetGentoolDownloadName();
+            var connection = await ConnectionChecker.CheckConnection("http://www.gentool.net/");            
 
-            if (GetCurrentGentoolVersion() < GetGentoolLatestVersion(genToolZipFileName))
-                await Download();
+            if (connection == ConnectionChecker.ConnectionStatus.Connected)
+            {
+                genToolZipFileName = GetGentoolDownloadName();
+
+                if (GetCurrentGentoolVersion() < GetGentoolLatestVersion(genToolZipFileName))
+                    await DownloadGentool();
+                return true;
+            }
+
+            return false;
         }
 
-        public static async Task Download()
+        public static async Task DownloadGentool()
         {
             genToolZipFileName = GetGentoolDownloadName();
             string gtURL = "http://www.gentool.net/download/" + genToolZipFileName;

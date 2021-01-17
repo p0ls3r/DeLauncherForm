@@ -13,13 +13,11 @@ namespace DeLauncherForm
         private static string[] rotrFiles = new string[] { "!!Rotr_Intrnl_AI", "!Rotr_Textures", "!!Rotr_Intrnl_Main", "!Rotr_Audio", "!Rotr_Maps", "!Rotr_Voice", "!!Rotr_Patch",
         "!Rotr_Blckr","!Rotr_Music","!Rotr_W3D","!Rotr_2D","!Rotr_English","!Rotr_Terrain","!Rotr_Window"};
   
-        public static void SetROTRFiles()
+        public static void SetROTRFiles(FormConfiguration conf)
         {
             Switch("gib", "big");
 
-            var patch = GetCurrentPatchInfo().Patch;
-
-            foreach (var exceptionFile in patch.ExceptionFiles)
+            foreach (var exceptionFile in conf.Patch.ExceptionFiles)
             {
                 if (File.Exists(exceptionFile + ".big"))
                     File.Move(exceptionFile + ".big", exceptionFile + ".gib");
@@ -34,6 +32,38 @@ namespace DeLauncherForm
             Switch("big", "gib");
             RenameScriptFilesBack();
             RenameWindowFilesBack();
+            RemoveBigs();
+        }
+
+        public static void RemoveBigs()
+        {
+            var filesBig = Directory.GetFiles(Directory.GetCurrentDirectory(), "*big");
+
+            //проходим по всем биг файлам
+            foreach (var bigFile in filesBig)
+            {
+                var fileAttributes = bigFile.Split('\\');
+
+                //отделяем имя файла без полного адреса в ОС
+                var fileBig = fileAttributes[fileAttributes.Length - 1];
+
+                if (fileBig[0] == '!')
+                {
+                    //проходим по списку имен патчей
+                    foreach (var patchFile in EntryPoint.KnownPatchTags)
+                    {
+                        //если файл оказался известным патчем и НЕ является актуальным из actualPatch переименовываем его или удаляем                        
+                        if (fileBig.Contains(patchFile))
+                        {
+                            var file = fileBig.Substring(0, fileBig.Length - 4);
+                            if (File.Exists(file + ".gib"))
+                                File.Delete(fileBig);
+                            else
+                                File.Move(fileBig, file + ".gib");
+                        }
+                    }
+                }
+            }
         }
 
         public static void RemoveOldVersions(FormConfiguration conf, PatchInfo actualPatch)
@@ -60,7 +90,7 @@ namespace DeLauncherForm
                     //проходим по списку имен патчей
                     foreach (var patchFile in EntryPoint.KnownPatchTags)
                     {
-                        //если файл оказался известным патчем И НЕ является актуальной из info переименовываем его или удаляем                        
+                        //если файл оказался известным патчем и НЕ является актуальным из actualPatch переименовываем его или удаляем                        
                         if (fileBig.Contains(patchFile))
                         {
                             var file = fileBig.Substring(0, fileBig.Length - 4);
@@ -72,10 +102,10 @@ namespace DeLauncherForm
                     }
                 }
             }
-        }        
+        }     
 
         //рефакторинг, сделать метод универсальным
-        public static bool CheckGibForActualVersion(PatchInfo actualPatch)
+        public static bool GetCurrentVersionNumberFromGib(PatchInfo actualPatch, bool deleteOldVersions)
         {
             //отдельный кейс для ваниллы
             if (actualPatch.Patch is Vanilla && File.Exists("!!Rotr_Intrnl_INI.gib") && File.Exists("!!Rotr_Intrnl_Eng.gib"))
@@ -104,58 +134,21 @@ namespace DeLauncherForm
                     if (number == actualPatch.Patch.PatchVersion)
                     {
                         var file = fileGib.Substring(0, fileGib.Length - 4);
-                        File.Move(fileGib, file + ".big");
+                        if (!File.Exists(file + ".big"))
+                            File.Move(fileGib, file + ".big");
                         return true;
                     }
+                    else
+                        if (deleteOldVersions && File.Exists(fileGib))
+                            File.Delete(fileGib);
                 }                
             }           
             return false;
         }
-
-        public static string GetCurrentPatchName()
-        {
-            string[] files = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.big");
-            foreach (string s in files)
-            {
-                var fileAttributes = s.Split('\\');
-                var file = fileAttributes[fileAttributes.Length-1];
-                if(file[0] == '!')
-                {
-                    foreach (var name in EntryPoint.KnownPatchTags)
-                    {
-                        if (file.Contains(name))
-                            return file;
-                    }
-                }                
-            }
-            return "";
-        }
-
-        public static PatchInfo GetCurrentPatchInfo()
-        {
-            string[] files = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.big");
-            foreach (string s in files)
-            {
-                var fileAttributes = s.Split('\\');
-                var file = fileAttributes[fileAttributes.Length - 1];
-
-                if (file.Contains("HP"))
-                {
-                    return new PatchInfo(new HPatch(GetVersionNumberFromPatchName(file)));
-                }
-                if (file.Contains("BP"))
-                {
-                    return new PatchInfo(new BPatch(GetVersionNumberFromPatchName(file)));
-                }
-                if (file.Contains("!!Rotr_Intrnl_INI"))
-                    return new PatchInfo(new Vanilla());                
-            }
-            return new PatchInfo(new None());
-        } 
         
         public static void ClearTempFiles()
         {
-            var files = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.bigtemp");
+            var files = Directory.GetFiles(Directory.GetCurrentDirectory(), "*temp");
             foreach (var file in files)
                 File.Delete(file);
         }

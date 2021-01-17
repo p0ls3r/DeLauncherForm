@@ -14,7 +14,7 @@ namespace DeLauncherForm
             if (!File.Exists(path+EntryPoint.VersionFileName))
                 CreateVersionFile();
 
-            return XmlVersionReader.GetVersionFromXml(path + EntryPoint.VersionFileName);
+            return XmlData.GetVersionFromXml(path + EntryPoint.VersionFileName);
         }
 
         private static void CreateVersionFile()

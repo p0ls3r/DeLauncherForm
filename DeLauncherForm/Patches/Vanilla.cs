@@ -6,7 +6,7 @@ namespace DeLauncherForm
     [Serializable]
     public class Vanilla : Patch
     {
-        public override string Name => "Vanilla";
+        public override string Name => "Original ROTR";
         public override string[] PatchTags { get; } = new string[] { "!!Rotr_Intrnl_INI", "!!Rotr_Intrnl_Eng" };
 
         public override string[] ExceptionFiles { get; } = new string[] { };

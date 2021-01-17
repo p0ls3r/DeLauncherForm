@@ -17,32 +17,31 @@ namespace DeLauncherForm
 
         public const string GameFile = "generals.exe";
         public const string ModdedGameFile = "modded.exe";
-
+        public const string WorldBuilderFile = "WorldBuilder.exe";
         public const string HPLogURL = "https://docs.google.com/document/d/1ZMlVFDPf4SDD5Y6vYatOCtaudBBl32gdWg-YrswvnGo/edit?usp=sharing";
-        public const string BPLogURL = "";
+        public const string BPLogURL = "https://docs.google.com/document/d/1iN2Zbl7i46RHSk-X9ewuYlaN8GrM_W0t2FHsP3KhMf0/edit?usp=sharing";
 
-        //public const string GameFile = "ConsoleApp1.exe";
-        //public const string ModdedGameFile = "ConsoleApp1.exe";
-
-        public const string WorldBuilderFile  = "WorldBuilder.exe";
-        
-        public const string HPLink = "alanblack166/Hanpatch";
+        public const string HPLink = "alanblack166/Hanpatch";        
         public const string BPLink = "Knjaz136/BPatch";
         public const string VanillaLink = "p0ls3r/ROTR187";
 
+        public const double Volume1 = 0.25;
+        public const double Volume2 = 0.2;
 
         [System.STAThreadAttribute()]
         public static void Main()
         {            
             try
             {
-                var conf = XMLReader.ReadConfiguration();
-                var opt = XMLReader.ReadOptions();
+                Tools.RotrInstallChecker.CheckROTRInstallation();
 
-                CheckDbgCrash();
+                CheckDbgCrash();                
+                var conf = XmlData.ReadConfiguration();
+                var opt = XmlData.ReadOptions();                
 
                 if (!InstancesChecker.AlreadyRunning())
                 {
+                    SoundsExtractor.ExtractSounds();
                     DeLauncherForm.App app = new DeLauncherForm.App();
                     app.Run(new MainWindow(conf, opt));
                 }
@@ -52,7 +51,7 @@ namespace DeLauncherForm
                     var window = new AbortWindow(conf)
                     {
                         WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen
-                    };
+                    };                    
                     app.Run(window);
                 }
             }

@@ -28,8 +28,7 @@ namespace DeLauncherForm
 
             if (conf.Lang == DeLauncherForm.Language.Rus)
             {
-                Update1.Text = "Обновление уже в пути!";
-                Update2.Text = "Даже взяли чинук! Терпение)";
+                Info.Source = new BitmapImage(new Uri("/Windows/Resources/info_rus.png", UriKind.Relative));
             }
         }
 
@@ -37,7 +36,7 @@ namespace DeLauncherForm
         {
             if (configuration.Lang == DeLauncherForm.Language.Rus)
             {
-                DownloadInfo.Text = "Скачивание файла: " + ReposWorker.CurrentFileName;
+                DownloadInfo.Text = "Загрузка: " + ReposWorker.CurrentFileName;
             }
             else
             {

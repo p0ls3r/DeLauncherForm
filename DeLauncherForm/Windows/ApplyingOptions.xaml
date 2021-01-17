@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="ApplyingOptions" Height="460.576" Width="550" WindowStyle="SingleBorderWindow" ResizeMode="NoResize">
     <Window.Background>
-        <ImageBrush ImageSource="Resources/facility.png"/>
+        <ImageBrush ImageSource="/Windows/Resources/facility.png"/>
     </Window.Background>
     <Grid>
         <TextBox x:Name = "DonwloadMessage1" IsReadOnly="True" HorizontalAlignment="Left" Height="35" Margin="120,345,0,0" TextWrapping="Wrap" Text="Applying settings..." FontSize="20" VerticalAlignment="Top" Width="300"

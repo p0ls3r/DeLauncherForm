@@ -23,3 +23,4 @@ C:\Users\HP\source\repos\DeLauncherForm\DeLauncherForm\obj\Debug\Windows\Applyin
 C:\Users\HP\source\repos\DeLauncherForm\DeLauncherForm\obj\Debug\Windows\ApplyingOptions.baml
 C:\Users\HP\source\repos\DeLauncherForm\DeLauncherForm\obj\Debug\Windows\GentoolUpdateFailed.g.cs
 C:\Users\HP\source\repos\DeLauncherForm\DeLauncherForm\obj\Debug\Windows\GentoolUpdateFailed.baml
+C:\Users\HP\source\repos\DeLauncherForm\DeLauncherForm\obj\Debug\GeneratedInternalTypeHelper.g.cs

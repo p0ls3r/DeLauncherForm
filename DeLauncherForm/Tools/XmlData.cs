@@ -1,11 +1,30 @@
 ﻿using System.IO;
 using System.Xml.Serialization;
+using System.Xml;
 
 
 namespace DeLauncherForm
 {
-    static class XMLReader
+    static class XmlData
     {
+
+        public static int GetVersionFromXml(string path)
+        {
+            var xDoc = new XmlDocument();
+            xDoc.Load(path);
+
+            var textNumber = xDoc.FirstChild.InnerText;
+            var numbers = textNumber.Split('.');
+            var result = "";
+
+            foreach (var number in numbers)
+            {
+                result += number;
+            }
+
+            return int.Parse(result);
+        }
+       
         static public LaunchOptions ReadOptions()
         {
             var path = EntryPoint.LauncherFolder;
@@ -34,7 +53,7 @@ namespace DeLauncherForm
                 ModdedExe = true,
                 FixFile = false,
                 Gentool = GentoolsMode.Current,
-                DebugFile = true                
+                DeleteOldVersions = true              
             };
 
             var formatter = new XmlSerializer(typeof(LaunchOptions));
@@ -94,7 +113,7 @@ namespace DeLauncherForm
         {
             var conf = new FormConfiguration
             {
-                Patch = new None(),
+                Patch = new Vanilla(),
                 Lang = Language.Eng
             };
 

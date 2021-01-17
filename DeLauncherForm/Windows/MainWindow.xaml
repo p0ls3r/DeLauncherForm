@@ -5,131 +5,102 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeLauncherForm"
         mc:Ignorable="d"
-        Title="DeLauncher" Height="560.000" Width="700.000" WindowStyle="SingleBorderWindow" ResizeMode="NoResize">
+        Title="DeLauncher" Height="600.000" Width="800.000" WindowStyle="None" ResizeMode="NoResize">
+
     <Window.Background>
-        <ImageBrush ImageSource="Resources/background.jpg"/>
+        <ImageBrush ImageSource="Resources/Main/base.png"/>
     </Window.Background>
+
     <Grid>
-        <Button x:Name="launch" Content="Launch" Margin="265,32,0,0" VerticalAlignment="Top" Height="40" FontFamily="Tahoma Bold" FontSize="20" HorizontalAlignment="Left" Width="162">
-            <Button.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#15FFFFFF" Offset="0" />
-                    <GradientStop Color="Maroon" Offset="0.5" />
-                    <GradientStop Color="#15FFFFFF" Offset="1" />
-                </LinearGradientBrush>
-            </Button.Background>
+        <Image x:Name="InfoAll" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="800"/>
+
+        <Button x:Name="launch" Width="140" Margin="596,65,65,498"  >
+            <Image x:Name="launchSource" Stretch="Fill" Margin="-3,-3,-3,-3"/>
         </Button>
 
-        <Button x:Name="WorldBuilder" Content="WorldBuilder" Margin="265,86,0,0" VerticalAlignment="Top" Height="40" FontFamily="Tahoma Bold" FontSize="20" HorizontalAlignment="Left" Width="162">
-            <Button.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#15FFFFFF" Offset="0" />
-                    <GradientStop Color="Maroon" Offset="0.5" />
-                    <GradientStop Color="#15FFFFFF" Offset="1" />
-                </LinearGradientBrush>
-            </Button.Background>
+        <Button x:Name="WorldBuilder" Margin="596,136,65,428" >
+            <Image x:Name="WorldbuilderSource" Stretch="Fill" Margin="-3,-3,-3,-3" />
         </Button>
 
-        <Grid x:Name="QuickStartGrid" HorizontalAlignment="Left" Margin="245,140,0,0" VerticalAlignment="Top" Height="40" Width="200">
-            <Border BorderBrush="DarkGray" BorderThickness="2"/>
-            <CheckBox x:Name="QuickStart" Content="Quick Start" FontFamily="Tahoma Bold" FontSize="20" VerticalAlignment="Top" Margin="10,6,-2,0" RenderTransformOrigin="0.751,0.864"></CheckBox>
-
-            <Grid.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="Maroon" Offset="0.5" />
-                </LinearGradientBrush>
-            </Grid.Background>
-        </Grid>
-
-        <Grid x:Name="WindGrid" HorizontalAlignment="Left" Margin="245,190,0,0" VerticalAlignment="Top" Height="40" Width="200">
-            <Border BorderBrush="DarkGray" BorderThickness="2">
-            </Border>
-            <CheckBox x:Name="Windowed" Content="Windowed" FontFamily="Tahoma Bold" FontSize="20" VerticalAlignment="Top" Margin="8,6,0,0" RenderTransformOrigin="0.751,0.864"></CheckBox>
-
-            <Grid.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="Maroon" Offset="0.5" />
-
-                </LinearGradientBrush>
-            </Grid.Background>
-        </Grid>
-
-        <TextBox x:Name = "Info" IsReadOnly="True" Height="32" Margin="150,244,0,0" TextWrapping="Wrap" Text="AutoUpdate Options:" FontFamily="Tahoma Bold" FontSize="18" VerticalAlignment="Top" HorizontalAlignment="Left" Width="390">
-
-            <TextBox.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="Maroon" Offset="0.5" />
-                    <GradientStop Color="#15FFFFFF" Offset="1" />
-                </LinearGradientBrush>
-            </TextBox.Background>
-
-        </TextBox>
-
-        <Grid HorizontalAlignment="Left" Margin="150,290,0,0" VerticalAlignment="Top" Height="130" Width="390">
-            <Border BorderBrush="DarkGray" BorderThickness="2"/>
-            <RadioButton x:Name="Vanilla" Content="Vanilla ROTR" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>
-            <RadioButton x:Name="BP" Content="BalancePatch" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>
-            <RadioButton x:Name="HP" Content="HanPatch" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>
-            <RadioButton x:Name="NoUpd" Content="Disable AutoUpdate" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>
-
-            <Button x:Name="HPchangeLog" Content="ChangeLog" Margin="260,68,0,0" VerticalAlignment="Top" Height="30" FontFamily="Tahoma Bold" FontSize="14" HorizontalAlignment="Left" Width="120">
-                <Button.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,2">
-                        <GradientStop Color="Maroon" Offset="0.5" />
-                        <GradientStop Color="#15FFFFFF" Offset="1" />
-                    </LinearGradientBrush>
-                </Button.Background>
-            </Button>
-
-            <Button x:Name="BPchangeLog" Content="ChangeLog" Margin="260,35,0,0" VerticalAlignment="Top" Height="30" Visibility="Hidden" FontFamily="Tahoma Bold" FontSize="14" HorizontalAlignment="Left" Width="120">
-                <Button.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,2">
-                        <GradientStop Color="Maroon" Offset="0.5" />
-                        <GradientStop Color="#15FFFFFF" Offset="1" />
-                    </LinearGradientBrush>
-                </Button.Background>
-            </Button>
-
-            <TextBox x:Name = "NoInternet" IsReadOnly="True" HorizontalAlignment="Left" Height="32" Margin="10,10,0,0" Visibility="Hidden" Text="" FontFamily="Tahoma Bold" FontSize="18" VerticalAlignment="Top" Width="350">
-            </TextBox>
-
-            <TextBox x:Name = "NoInternet2" IsReadOnly="True" HorizontalAlignment="Left" Height="32" Margin="10,50,0,0" Visibility="Hidden"  Text="" FontFamily="Tahoma Bold" FontSize="18" VerticalAlignment="Top" Width="350">
-            </TextBox>
-
-            <Grid.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="Maroon" Offset="0.5" />
-                    <GradientStop Color="#15FFFFFF" Offset="1" />
-                </LinearGradientBrush>
-            </Grid.Background>
-        </Grid>
-
-        <Button x:Name="AdvancedOptions" Content="Advanced Options" Margin="150,434,0,0" VerticalAlignment="Top" Height="40" FontFamily="Tahoma Bold" FontSize="20" HorizontalAlignment="Left" Width="270">
-            <Button.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,4">
-                    <GradientStop Color="Maroon" Offset="0.5" />
-                    <GradientStop Color="#15FFFFFF" Offset="1" />
-                </LinearGradientBrush>
-            </Button.Background>
+        <Button x:Name="QuickStart"  Margin="596,207,65,357">
+            <Image x:Name="QuickStartSource"  Stretch="Fill" Margin="-3,-3,-3,-3"/>
         </Button>
 
-        <Grid HorizontalAlignment="Left" Margin="10,410,0,0" VerticalAlignment="Top" Height="65" Width="120">
-            <Border BorderBrush="DarkGray" BorderThickness="2"/>
-            <RadioButton x:Name="Rus" Content="РУС" HorizontalAlignment="Left" Margin="10,8,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>
-            <RadioButton x:Name="Eng" Content="ENG" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>
+        <Button x:Name="Windowed"  Margin="596,278,65,286" >
+            <Image x:Name="WindowedSource"  Stretch="Fill" Margin="-3,-3,-3,-3"/>
+        </Button>
 
-            <Grid.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#15FFFFFF" Offset="1" />
-                </LinearGradientBrush>
-            </Grid.Background>
-        </Grid>
+        <Button x:Name="Exit"  Margin="596,352,65,212" >
+            <Image x:Name="ExitSource"  Stretch="Fill" Margin="-3,-3,-3,-3"/>
+        </Button>
 
-        <TextBox x:Name = "VersionInfo" IsReadOnly="True" Text="0.00.00.00" HorizontalAlignment="Left" Height="29" Margin="10,485,0,0" TextWrapping="Wrap"  FontSize="16" VerticalAlignment="Top" Width="120"
-                 Background="#15FFFFFF"/>
+        <Button x:Name="BP"  Margin="572,485,133,73" >
+            <Image x:Name="BPSource"  Stretch="Fill" Margin="-3,-3,-3,-3"/>
+        </Button>
 
-        <TextBox x:Name = "PatchInfo" IsReadOnly="True" HorizontalAlignment="Left" Height="29" Margin="150,485,0,0" TextWrapping="Wrap" Text="Updating" FontSize="15" VerticalAlignment="Top" Width="331"
-                 Background="LightGray"/>
+        <Button x:Name="BPChanglog"  Margin="667,485,68,73" >
+            <Image x:Name="BPChangelogSource"  Stretch="Fill" Margin="-3,-3,-3,-3"/>
+        </Button>
+
+        <Button x:Name="HP"  Margin="345,485,360,73" >
+            <Image x:Name="HPSource"  Stretch="Fill" Margin="-3,-3,-3,-3"/>
+        </Button>
+
+        <Button x:Name="HPChanglog"  Margin="440,485,295,73" >
+            <Image x:Name="HPChangelogSource"  Stretch="Fill" Margin="-3,-3,-3,-3"/>
+        </Button>
+
+        <Button x:Name="Vanilla"  Margin="118,485,522,73" >
+            <Image x:Name="VanillaSource"  Stretch="Fill" Margin="-3,-3,-3,-3"/>
+        </Button>
+
+        <Image x:Name="QSIndicator" HorizontalAlignment="Left" Height="62" Margin="552,194,0,0" VerticalAlignment="Top" Width="25" Source="/Windows/Resources/Main/indicator_off.png" Stretch="Fill"/>
+        <Image x:Name="WindowIndicator" HorizontalAlignment="Left" Height="62" Margin="552,265,0,0" VerticalAlignment="Top" Width="25" Source="/Windows/Resources/Main/indicator_off.png" Stretch="Fill"/>
+
+        <Button x:Name="AdvancedOptions" Margin="183,302,0,0" VerticalAlignment="Top" Height="36"  HorizontalAlignment="Left" Width="103">
+            <Image x:Name="OptionsSource"  Stretch="Fill" Margin="-3,-3,-3,-3"/>
+        </Button>
+
+
+
+
+        <Label x:Name = "VersionInfo" Content="0.00.00.0" Foreground="White" FontSize="18" Margin="205,370,507,200">
+            <Label.Template>
+                <ControlTemplate TargetType="Label">
+                    <Border>
+                        <Grid>
+                            <ContentPresenter TextBlock.Foreground="{TemplateBinding Foreground}"/>
+                            <ContentPresenter TextBlock.Foreground="{TemplateBinding Foreground}">
+                                <ContentPresenter.Effect>
+                                    <BlurEffect Radius="5"/>
+                                </ContentPresenter.Effect>
+                            </ContentPresenter>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Label.Template>
+        </Label>
+
+        <Image x:Name="ShtoraBP" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" Width="40" Margin="523,484,0,0" Source="/Windows/Resources/Main/shtora.png" />
+
+        <Image x:Name="ShtoraHP" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" Width="40" Margin="296,484,0,0" Source="/Windows/Resources/Main/shtora.png" />
+
+        <Image x:Name="ShtoraVanilla" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" Width="40" Margin="69,484,0,0" Source="/Windows/Resources/Main/shtora.png" />
+
+        <Image HorizontalAlignment="Left" Height="228" Margin="52,52,0,0" VerticalAlignment="Top" Width="425" Source="/Windows/Resources/Main/frame.png" Stretch="Fill" Panel.ZIndex="10" />
+
+        <local:GifImage x:Name="gifImage" Stretch="None" Margin="52,52,323,320" Height="Auto" Width="Auto"  />
+
+        <Button x:Name="Eng" HorizontalAlignment="Left" Opacity="0" Margin="128,304,0,0" VerticalAlignment="Top" Width="40" Height="37"/>
+
+        <Button x:Name="Rus" HorizontalAlignment="Left" Opacity="0" Margin="128,354,0,0" VerticalAlignment="Top" Width="40" Height="37"/>
+
+        <Image x:Name="RusImage" HorizontalAlignment="Left" Height="46" Margin="65,350,0,0" VerticalAlignment="Top" Width="58" Source="/Windows/Resources/Main/rus.png"/>
+        <Image x:Name="EngImage" HorizontalAlignment="Left" Height="46" Margin="65,300,0,0" VerticalAlignment="Top" Width="58" Source="/Windows/Resources/Main/eng.png"/>
+
+
+        <Image HorizontalAlignment="Left" Height="27" Margin="183,369,0,204" Width="100" Source="/Windows/Resources/Main/trans.png" Opacity="0.3"/>
+        <Image x:Name="NoInternet" Margin="52,52,323,320" Source="/Windows/Resources/Main/nointernet_e.png"/>
 
     </Grid>
 </Window>

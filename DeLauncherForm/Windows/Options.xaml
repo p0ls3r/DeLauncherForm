@@ -5,110 +5,59 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeLauncherForm.Windows"
         mc:Ignorable="d"
-        Title="Advanced Options" Height="560" Width="700" WindowStyle="SingleBorderWindow" ResizeMode="NoResize">
+        Title="Advanced Options" Height="600" Width="800" WindowStyle="None" ResizeMode="NoResize">
     <Window.Background>
-        <ImageBrush ImageSource="Resources/reactor.png"/>
+        <ImageBrush ImageSource="/Windows/Resources/Options/base.png"/>
     </Window.Background>
 
     <Grid>
-        <TextBox x:Name = "exeInfo" IsReadOnly="True" Height="32" Margin="10,10,0,0" TextWrapping="Wrap" Text="Exe file options:" FontFamily="Tahoma Bold" FontSize="18" VerticalAlignment="Top" HorizontalAlignment="Left" Width="200">
-            <TextBox.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,5">
-                    <GradientStop Color="Yellow" Offset="0" />
-                    <GradientStop Color="#15FFFFFF" Offset="1" />
-                </LinearGradientBrush>
-            </TextBox.Background>
-        </TextBox>
+        <Image x:Name="help" Source="/Windows/Resources/Options/help_e.png" HorizontalAlignment="Left" Height="486" Margin="308,52,0,0" VerticalAlignment="Top" Width="267"/>
+        <Image x:Name="text" Source="/Windows/Resources/Options/text_e.png" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="800"/>
 
-        <Grid HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Height="70" Width="390">
-            <Border BorderBrush="DarkGray" BorderThickness="2"/>
-            <RadioButton x:Name="modded" Content="Use modded.exe" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>
-            <RadioButton x:Name="original" Content="Use original general.exe" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>
+        <Image x:Name="shtora1" HorizontalAlignment="Left" Source="/Windows/Resources/Options/shtora.png" Stretch="Fill" Height="35" Margin="217,100,0,0" VerticalAlignment="Top" Width="36"/>
+        <Image x:Name="shtora2" HorizontalAlignment="Left" Source="/Windows/Resources/Options/shtora.png" Stretch="Fill" Height="35" Margin="217,158,0,0" VerticalAlignment="Top" Width="36"/>
 
-            <Grid.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="Yellow" Offset="0" />
-                    <GradientStop Color="#15FFFFFF" Offset="1" />
-                </LinearGradientBrush>
-            </Grid.Background>
-        </Grid>
+        <Image x:Name="shtora3" HorizontalAlignment="Left" Source="/Windows/Resources/Options/shtora.png" Stretch="Fill" Height="35" Margin="217,359,0,0" VerticalAlignment="Top" Width="36"/>
+        <Image x:Name="shtora4" HorizontalAlignment="Left" Source="/Windows/Resources/Options/shtora.png" Stretch="Fill" Height="35" Margin="217,417,0,0" VerticalAlignment="Top" Width="36"/>
+        <Image x:Name="shtora5" HorizontalAlignment="Left" Source="/Windows/Resources/Options/shtora.png" Stretch="Fill" Height="35" Margin="217,475,0,0" VerticalAlignment="Top" Width="36"/>
 
-        <TextBox x:Name = "fixFileInfo" IsReadOnly="True" Height="32" Margin="10,130,0,0" TextWrapping="Wrap" Text="Fix file options:" FontFamily="Tahoma Bold" FontSize="18" VerticalAlignment="Top" HorizontalAlignment="Left" Width="200">
-            <TextBox.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,5">
-                    <GradientStop Color="Yellow" Offset="0" />
-                    <GradientStop Color="#15FFFFFF" Offset="1" />
-                </LinearGradientBrush>
-            </TextBox.Background>
-        </TextBox>
 
-        <Grid HorizontalAlignment="Left" Margin="10,170,0,0" VerticalAlignment="Top" Height="35" Width="390">
-            <Border BorderBrush="DarkGray" BorderThickness="2"/>
-            <CheckBox x:Name="fixFile" Content="Use d3d8to9.dll" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>
+        <Image x:Name="indicator1" HorizontalAlignment="Left" Source="/Windows/Resources/Options/indicator_off.png" Margin="226,258,0,0" VerticalAlignment="Top" Width="25" Height="50"/>
+        <Image x:Name="indicator2" HorizontalAlignment="Left" Source="/Windows/Resources/Options/indicator_off.png" Margin="604,239,0,0" VerticalAlignment="Top" Width="25" Height="50"/>
+        <Image x:Name="indicator3" HorizontalAlignment="Left" Source="/Windows/Resources/Options/indicator_off.png" Margin="604,301,0,0" VerticalAlignment="Top" Width="25" Height="50"/>
 
-            <Grid.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="Yellow" Offset="0" />
-                    <GradientStop Color="#15FFFFFF" Offset="1" />
-                </LinearGradientBrush>
-            </Grid.Background>
-        </Grid>
 
-        <TextBox x:Name = "gentoolInfo" IsReadOnly="True" Height="32" Margin="10,212,0,0" TextWrapping="Wrap" Text="Gentools options:" FontFamily="Tahoma Bold" FontSize="18" VerticalAlignment="Top" HorizontalAlignment="Left" Width="200">
-            <TextBox.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,5">
-                    <GradientStop Color="Yellow" Offset="0" />
-                    <GradientStop Color="#15FFFFFF" Offset="1" />
-                </LinearGradientBrush>
-            </TextBox.Background>
-        </TextBox>
+        <Button x:Name="modded" Margin="81,99,589,453"  >
+            <Image x:Name="moddedSource" Stretch="Fill" Margin="-3,-3,-3,-3" />
+        </Button>
 
-        <Grid HorizontalAlignment="Left" Margin="10,255,0,0" VerticalAlignment="Top" Height="100" Width="390">
-            <Border BorderBrush="DarkGray" BorderThickness="2"/>
-            <RadioButton x:Name="AutoUpdate" Content="AutoUpdate to latest version" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>
-            <RadioButton x:Name="CurrentVersion" Content="Use current version" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>
-            <RadioButton x:Name="Remove" Content="Disable Gentools" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18"/>
+        <Button x:Name="sounds" Margin="637,303,64,250"  >
+            <Image x:Name="soundsSource" Stretch="Fill" Margin="-3,-3,-3,-3" />
+        </Button>
 
-            <Grid.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="Yellow" Offset="0" />
-                    <GradientStop Color="#15FFFFFF" Offset="1" />
-                </LinearGradientBrush>
-            </Grid.Background>
-        </Grid>
+        <Button x:Name="original" Margin="81,157,589,395"  >
+            <Image x:Name="originalSource" Stretch="Fill" Margin="-3,-3,-3,-3" />
+        </Button>
 
-        <TextBox x:Name = "dbgInfo" IsReadOnly="True" Height="32" Margin="10,365,0,0" TextWrapping="Wrap" Text="AMD crash fix:" FontFamily="Tahoma Bold" FontSize="18" VerticalAlignment="Top" HorizontalAlignment="Left" Width="200">
-            <TextBox.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,5">
-                    <GradientStop Color="Yellow" Offset="0" />
-                    <GradientStop Color="#15FFFFFF" Offset="1" />
-                </LinearGradientBrush>
-            </TextBox.Background>
-        </TextBox>
+        <Button x:Name="fixfile" Margin="81,259,588,294"  >
+            <Image x:Name="fixfileSource" Stretch="Fill" Margin="-3,-3,-3,-3" />
+        </Button>
 
-        <Grid x:Name="dbg" HorizontalAlignment="Left" Margin="10,405,0,0" VerticalAlignment="Top" Height="35" Width="390">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="0*"/>
-            </Grid.ColumnDefinitions>
-            <Border BorderBrush="DarkGray" BorderThickness="2"/>
-            <CheckBox x:Name="dbgHelpRemove" Content="Remove dbghelp.dll" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top" FontFamily="Tahoma Bold" FontSize="18" Height="22" Width="370"/>
+        <Button x:Name="AutoUpdate" Margin="81,360,590,206"  >
+            <Image x:Name="AutoUpdateSource" Stretch="Fill" Margin="-3,-3,-3,-3" />
+        </Button>
+        <Button x:Name="CurrentVersion" Margin="81,418,590,148"  >
+            <Image x:Name="CurrentVersionSource" Stretch="Fill" Margin="-3,-3,-3,-3" />
+        </Button>
+        <Button x:Name="Remove"  Margin="81,476,590,90"  >
+            <Image x:Name="RemoveSource" Stretch="Fill" Margin="-3,-3,-3,-3" />
+        </Button>
 
-            <Grid.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="Yellow" Offset="0" />
-                    <GradientStop Color="#15FFFFFF" Offset="1" />
-                </LinearGradientBrush>
-            </Grid.Background>
-        </Grid>
-
-        <Button x:Name="Apply" Content="Apply Options" Margin="240,461,0,0" VerticalAlignment="Top" Height="40" FontFamily="Tahoma Bold" FontSize="20" HorizontalAlignment="Left" Width="200">
-            <Button.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,4">
-                    <GradientStop Color="Maroon" Offset="0.5" />
-                    <GradientStop Color="#15FFFFFF" Offset="1" />
-                </LinearGradientBrush>
-            </Button.Background>
+        <Button x:Name="Apply" Margin="603,65,60,461">
+            <Image x:Name="ApplySource" Stretch="Fill" Margin="-3,-3,-3,-3" />
+        </Button>
+        <Button x:Name="DeleteOld" Margin="637,241,64,312"  >
+            <Image x:Name="DeleteOldSource" Stretch="Fill" Margin="-3,-3,-3,-3" />
         </Button>
 
     </Grid>

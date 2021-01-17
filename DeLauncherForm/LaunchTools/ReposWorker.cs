@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
@@ -24,6 +27,25 @@ namespace DeLauncherForm
             DownloadStatusChanged(percentage);
         }
 
+        static void webClient_DownloadComplete(object sender, AsyncCompletedEventArgs e)
+        {
+            var archiveName = CurrentFileName + "temp";
+
+            using (ZipArchive archive = ZipFile.OpenRead(archiveName))
+            {
+                foreach (ZipArchiveEntry entry in archive.Entries)
+                {
+                    if (entry.FullName[0] == '!' && entry.FullName[1] == '!' && entry.FullName[2] == '!' && entry.FullName[3] == '!')
+                        entry.ExtractToFile(entry.FullName, true);
+                    else
+                        entry.ExtractToFile("!!!!" + entry.FullName, true);
+                }
+            }
+
+            if (File.Exists(archiveName))
+                File.Delete(archiveName);          
+        }
+
         public static PatchInfo GetLatestPatchInfo(FormConfiguration conf)
         {
             //особый кейс
@@ -35,7 +57,8 @@ namespace DeLauncherForm
             foreach (var parsedData in GetRepoContent(conf))
             {
                 var fileName = (string)parsedData["name"];
-                if (fileName[fileName.Length - 1] == 'g' && fileName[fileName.Length - 2] == 'i' && fileName[fileName.Length - 3] == 'b' && fileName[fileName.Length - 4] == '.')
+                if ((fileName[fileName.Length - 1] == 'g' && fileName[fileName.Length - 2] == 'i' && fileName[fileName.Length - 3] == 'b' && fileName[fileName.Length - 4] == '.') ||
+                    (fileName[fileName.Length - 1] == 'p' && fileName[fileName.Length - 2] == 'i' && fileName[fileName.Length - 3] == 'z' && fileName[fileName.Length - 4] == '.'))
                     versionNumber = LocalFilesWorker.GetVersionNumberFromPatchName(fileName);
             }
 
@@ -59,29 +82,13 @@ namespace DeLauncherForm
                 {
                     var downloadUrl = (string)parsedData["download_url"];
                     var fileName = (string)parsedData["name"];
+                     
+                    await DownLoad(downloadUrl, fileName);
+                    sw.Reset();
 
-                    //если запрашиваем не ваннилу, а БП или ХП, то скачиваем с пометкой темп и создаём !!!!
-                    if (!(conf.Patch is Vanilla) && ((fileName[0] == 'H' && fileName[1] == 'P') || (fileName[0] == 'B' && fileName[1] == 'P')))
-                    {
-                        await DownLoad(downloadUrl, fileName);
-                        sw.Reset();
-
-                        if (File.Exists("!!!!" + fileName))
-                            File.Delete("!!!!" + fileName);
-
-                        File.Move(fileName + "temp", "!!!!" + fileName);
-                    }
-                    //иначе скачиваем без !!!!
-                    else
-                    {
-                        await DownLoad(downloadUrl, fileName);
-                        sw.Reset();
-
-                        if (File.Exists(fileName))
-                            File.Delete(fileName);
-
+                    if (File.Exists(fileName + "temp") && !File.Exists(fileName))
                         File.Move(fileName + "temp", fileName);
-                    }
+                    else File.Delete(fileName + "temp");
                 }
             }
         }
@@ -112,7 +119,10 @@ namespace DeLauncherForm
             CurrentFileName = fileName;
             using (WebClient client = new WebClient())
             {                
-                client.DownloadProgressChanged += new System.Net.DownloadProgressChangedEventHandler(webClient_DownloadProgressChanged);
+                client.DownloadProgressChanged += webClient_DownloadProgressChanged;
+                if ((fileName[fileName.Length - 1] == 'p' && fileName[fileName.Length - 2] == 'i' && fileName[fileName.Length - 3] == 'z'))
+                    client.DownloadFileCompleted += webClient_DownloadComplete;
+
                 sw.Start();
                 var task = client.DownloadFileTaskAsync(uri, fileName + "temp");
                 return task;

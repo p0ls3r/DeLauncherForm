@@ -8,6 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("windows/resources/gentools.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("windows/resources/pressedbuttons/currentversion.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("windows/resources/pressedbuttons/press%202.png")]
 
 

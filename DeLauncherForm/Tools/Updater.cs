@@ -45,7 +45,7 @@ namespace DeLauncherForm
                     using (WebClient client = new WebClient())
                         client.DownloadFile(downloadUrl, name);
 
-                    var newVersionNumber = XmlVersionReader.GetVersionFromXml(name);
+                    var newVersionNumber = XmlData.GetVersionFromXml(name);
 
                     File.Delete(name);
 

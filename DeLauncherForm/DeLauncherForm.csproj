@@ -71,17 +71,24 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="GenTools\GentoolsUpdater.cs" />
-    <Compile Include="LaunchTools\WorldBuilderLauncher.cs" />
+    <Compile Include="GifImage.cs" />
     <Compile Include="Patches\BPatch.cs" />
     <Compile Include="Patches\HPatch.cs" />
     <Compile Include="Patches\Patch.cs" />
     <Compile Include="Patches\None.cs" />
     <Compile Include="Patches\Vanilla.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\ImageHandler.cs" />
     <Compile Include="Tools\LaunchOptions.cs" />
     <Compile Include="Tools\OptionsSetter.cs" />
+    <Compile Include="Tools\RotrInstallChecker.cs" />
+    <Compile Include="Tools\SoundsExtractor.cs" />
     <Compile Include="Tools\Updater.cs" />
     <Compile Include="Tools\VersionChecker.cs" />
-    <Compile Include="Tools\XmlVersionReader.cs" />
     <Compile Include="Windows\ApplyingOptions.xaml.cs">
       <DependentUpon>ApplyingOptions.xaml</DependentUpon>
     </Compile>
@@ -118,7 +125,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Tools\XMLReader.cs" />
+    <Compile Include="Tools\XmlData.cs" />
     <Compile Include="Tools\FormConfiguration.cs" />
     <Compile Include="Tools\ConnectionChecker.cs" />
     <Compile Include="Windows\DownloadWindow.xaml.cs">
@@ -144,11 +151,6 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -169,25 +171,199 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Windows\Resources\background.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Russia.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Windows\Resources\chinook.jpeg" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Windows\Resources\sent.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Windows\Resources\reactor.png" />
+    <Resource Include="Windows\Resources\Gentools.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\Main\base.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\Main\indicator_off.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\Main\indicator_on.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\Main\shtora.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\Main\frame.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="monitor.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\Main\eng.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\Main\rus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\UnpressedButtons\BALANCEPATCH.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\EXIT.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\HANPATCH.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\LAUNCH.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\OPTIONS.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\ORIGINAL ROTR.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\QUICKSTART.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\WINDOWED.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\PressedButtons\BALANCEPATCH 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\EXIT 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\HANPATCH 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\LAUNCH 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\OPTIONS 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\ORIGINAL ROTR 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\QUICKSTART 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\WINDOWED 2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\UnpressedButtons\BALANCEPATCH PYC.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\EXIT PYC.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\HANPATCH PYC.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\LAUNCH PYC.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\OPTIONS PYC.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\ORIGINAL ROTR PYC.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\QUICKSTART PYC.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\WINDOWED PYC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\PressedButtons\BALANCEPATCH PYC 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\EXIT PYC 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\HANPATCH PYC 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\LAUNCH PYC 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\OPTIONS PYC 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\ORIGINAL ROTR PYC 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\QUICKSTART PYC 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\WINDOWED PYC 2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\PressedButtons\CHANGELOG 2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\PressedButtons\WORLDBUILDER 2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\UnpressedButtons\CHANGELOG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\UnpressedButtons\WORLDBUILDER.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\PressedButtons\APPLY 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\CURRENTVERSION 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\DELETEOLD 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\DISABLEGENTOOLS 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\FIXFILE 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\GENERALS 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\LATESTVERSION 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\MODDED 2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\Options\help_e.png" />
+    <Resource Include="Windows\Resources\Options\help_r.png" />
+    <Resource Include="Windows\Resources\Options\base.png" />
+    <Resource Include="Windows\Resources\Options\shtora.png" />
+    <Resource Include="Windows\Resources\Options\text_e.png" />
+    <Resource Include="Windows\Resources\Options\text_r.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\PressedButtons\APPLY PYC 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\CURRENTVERSION PYC 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\DELETEOLD PYC 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\DISABLEGENTOOLS PYC 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\FIXFILE PYC 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\GENERALS PYC 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\LATESTVERSION PYC 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\MODDED PYC 2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\UnpressedButtons\APPLY.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\CURRENTVERSION.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\DELETEOLD PYC.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\DISABLEGENTOOLS PYC.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\FIXFILE PYC.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\GENERALS PYC.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\LATESTVERSION PYC.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\MODDED PYC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\UnpressedButtons\APPLY PYC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\UnpressedButtons\CURRENTVERSION PYC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\UnpressedButtons\DELETEOLD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\UnpressedButtons\DISABLEGENTOOLS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\UnpressedButtons\FIXFILE.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\UnpressedButtons\GENERALS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\UnpressedButtons\LATESTVERSION.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\UnpressedButtons\MODDED.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\Options\indicator_off.png" />
+    <Resource Include="Windows\Resources\Options\indicator_on.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\press3.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\press2.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\press1.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\Main\trans.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\Main\nointernet_e.png" />
+    <Resource Include="Windows\Resources\Main\nointernet_r.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\UnpressedButtons\SOUNDS PYC.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\SOUNDS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\PressedButtons\SOUNDS 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\SOUNDS PYC 2.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Windows\Resources\facility.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Windows\Resources\Gentools.png" />
+    <Resource Include="Windows\Resources\chinook.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\info_eng.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\info_rus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\Main\info_e.png" />
+    <Resource Include="Windows\Resources\Main\info_r.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\PressedButtons\CURRENTVERSION.png" />
+    <Resource Include="Windows\Resources\PressedButtons\PRESS 2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

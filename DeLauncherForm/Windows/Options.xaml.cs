@@ -23,24 +23,89 @@ namespace DeLauncherForm.Windows
         public event Action CloseWindow;
         private FormConfiguration configuration;
         private LaunchOptions options;
+        private ImageHandler repos;
+        public MediaPlayer player1 = new MediaPlayer();
+        public MediaPlayer player2 = new MediaPlayer();
+        public MediaPlayer player3 = new MediaPlayer();
 
-        public Options(FormConfiguration cfg, LaunchOptions opt)
+
+        public Options(FormConfiguration cfg, LaunchOptions opt, ImageHandler rep)
         {
             InitializeComponent();
             configuration = cfg;
-            options = opt;            
+            options = opt;
+            repos = rep;
+
+            SetButtonsImages();
 
             if (configuration.Lang == DeLauncherForm.Language.Rus)
                 SetRus();
+            else
+                SetEng();
 
             SetOptions();
             SetButtonsBindings();
+            GetSound1();
         }
 
-        public void Applying(object sender, EventArgs e)
+        private void StopPlayers()
         {
-            ApplyOptions(configuration, options);
-            this.Close();
+            if (options.Sounds)
+            {
+                player1.Close();
+                player2.Close();
+                player3.Close();
+            }
+        }
+
+        private void SetVolume()
+        {
+            player1.SpeedRatio = 0.85;
+            player3.SpeedRatio = 0.9;
+            player1.Volume = EntryPoint.Volume1;
+            player2.Volume = EntryPoint.Volume2;
+            player3.Volume = EntryPoint.Volume1;
+        }
+
+        private void GetSound1()
+        {
+            if (options.Sounds)
+            {
+                StopPlayers();
+                player3.Open(new Uri(EntryPoint.LauncherFolder + "press1.wav", UriKind.Relative));
+                SetVolume();
+                player3.Play();
+            }
+        }
+
+        private void GetSound2()
+        {
+            if (options.Sounds)
+            {
+                StopPlayers();
+                player1.Open(new Uri(EntryPoint.LauncherFolder + "press2.wav", UriKind.Relative));
+                SetVolume();
+                player1.Play();
+            }
+        }
+
+        private void GetSound3()
+        {
+            if (options.Sounds)
+            {
+                StopPlayers();
+                player2.Open(new Uri(EntryPoint.LauncherFolder + "press3.wav", UriKind.Relative));
+                SetVolume();
+                player2.Play();
+            }
+        }
+
+        private void ClosePlayers(object sender, EventArgs e)
+        {
+            player1.Volume = 0;
+            player2.Volume = 0;
+            player3.Volume = 0;
+            StopPlayers();
         }
 
         public void Close(object sender, EventArgs e)
@@ -50,94 +115,265 @@ namespace DeLauncherForm.Windows
 
         private void SetRus()
         {
-            exeInfo.Text = "Опции Exe файла:";
-            modded.Content = "Использовать modded.exe";
-            original.Content = "Использовать generals.exe";
+            text.Source = new BitmapImage(new Uri("/Windows/Resources/Options/text_r.png", UriKind.Relative));
+            help.Source = new BitmapImage(new Uri("/Windows/Resources/Options/help_r.png", UriKind.Relative));                       
+        }
 
-            fixFileInfo.Text = "Файл-фикс:";
-            fixFile.Content = "Использовать d3d8to9.dll";
+        private void SetEng()
+        {
+            text.Source = new BitmapImage(new Uri("/Windows/Resources/Options/text_e.png", UriKind.Relative));
+            help.Source = new BitmapImage(new Uri("/Windows/Resources/Options/help_e.png", UriKind.Relative));
+        }
 
-            gentoolInfo.Text = "Опции Gentools:";
-            AutoUpdate.Content = "Автообновление до последней версии";
-            CurrentVersion.Content = "Использовать текущую версию";
-            Remove.Content = "Отключить Gentools при запуске";
+        private void SetButtonsImages()
+        {
+            moddedSource.Source = repos.GetImage(false, configuration.Lang, "modded");
+            originalSource.Source = repos.GetImage(false, configuration.Lang, "generals");
 
-            dbgInfo.Text = "Фикс AMD краша:";
-            dbgHelpRemove.Content = "Удалить dbghelp.dll";
+            AutoUpdateSource.Source = repos.GetImage(false, configuration.Lang, "latestversion");
+            CurrentVersionSource.Source = repos.GetImage(false, configuration.Lang, "currentversion");
+            RemoveSource.Source = repos.GetImage(false, configuration.Lang, "disable");
 
-            Apply.Content = "Применить";
+            fixfileSource.Source = repos.GetImage(false, configuration.Lang, "fixfile");
+            ApplySource.Source = repos.GetImage(false, configuration.Lang, "apply");
+
+            DeleteOldSource.Source = repos.GetImage(false, configuration.Lang, "deleteold");
+            soundsSource.Source = repos.GetImage(false, configuration.Lang, "sounds");
         }
 
         private void SetOptions()
         {
             if (options.ModdedExe)
-                modded.IsChecked = true;
+                SetModdedShtora();
             else
-                original.IsChecked = true;
+                SetGeneralsShtora();
 
-            if (options.FixFile)
-                fixFile.IsChecked = true;
+            SetIndicator1();
+            SetIndicator2();
+            SetIndicator3();
 
             if (options.Gentool == GentoolsMode.AutoUpdate)
-                AutoUpdate.IsChecked = true;
+                SetAutoUpdateShtora();
             if (options.Gentool == GentoolsMode.Current)
-                CurrentVersion.IsChecked = true;
+                SetCurrentVersionShtora();
             if (options.Gentool == GentoolsMode.Disable)
-                Remove.IsChecked = true;
-
-            if (options.DebugFile == true)
-                dbgHelpRemove.IsChecked = true;
+                SetRemoveShtora();
         }
         private void SetButtonsBindings()
         {
-            dbgHelpRemove.Visibility = Visibility.Collapsed;
-            dbgInfo.Visibility = Visibility.Collapsed;
-            dbg.Visibility = Visibility.Collapsed;
+            modded.PreviewMouseLeftButtonDown += ModdedSetStart;
+            modded.PreviewMouseLeftButtonUp += ModdedSetEnd;
+            original.PreviewMouseLeftButtonDown += OriginalSetStart;
+            original.PreviewMouseLeftButtonUp += OriginalSetEnd;
+            fixfile.PreviewMouseLeftButtonDown += FixFileSetStart;
+            fixfile.PreviewMouseLeftButtonUp += FixFileSetEnd;
+            AutoUpdate.PreviewMouseLeftButtonDown += AutoUpdateSetStart;
+            AutoUpdate.PreviewMouseLeftButtonUp += AutoUpdateSetEnd;
+            CurrentVersion.PreviewMouseLeftButtonDown += CurrentVersionSetStart;
+            CurrentVersion.PreviewMouseLeftButtonUp += CurrentVersionSetEnd;
+            Remove.PreviewMouseLeftButtonDown += RemoveSetStart;
+            Remove.PreviewMouseLeftButtonUp += RemoveSetEnd;
+            Apply.PreviewMouseLeftButtonDown += ApplyingStart;
+            Apply.PreviewMouseLeftButtonUp += ApplyingEnd;
+            DeleteOld.PreviewMouseLeftButtonDown += DeleteOldSetStart;
+            DeleteOld.PreviewMouseLeftButtonUp += DeleteOldSetEnd;
 
-            modded.Click += ModdedSet;
-            original.Click += OriginalSet;
-            fixFile.Click += FixFileSet;
-            AutoUpdate.Click += AutoUpdateSet;
-            CurrentVersion.Click += CurrentVersionSet;
-            Remove.Click += RemoveSet;
-            dbgHelpRemove.Click += dbgHelpSet;
-            Apply.Click += Applying;
+            sounds.PreviewMouseLeftButtonDown += SoundSetStart;
+            sounds.PreviewMouseLeftButtonUp += SoundSetEnd;
+
+
+            this.MouseDown += Window_MouseDown;            
             this.Closing += Close;
+            this.Unloaded += ClosePlayers;
         }
 
-        private void ModdedSet(object sender, EventArgs e)
+        private void SoundSetStart(object sender, EventArgs e)
+        {            
+            soundsSource.Source = repos.GetImage(true, configuration.Lang, "sounds");
+        }
+
+        private void SoundSetEnd(object sender, EventArgs e)
         {
+            soundsSource.Source = repos.GetImage(false, configuration.Lang, "sounds");            
+            options.Sounds = !options.Sounds;
+            GetSound2();
+            SetIndicator3();
+        }
+
+        private void SetIndicator3()
+        {
+            if (options.Sounds)
+                indicator3.Source = new BitmapImage(new Uri("/Windows/Resources/Options/indicator_on.png", UriKind.Relative));
+            else
+                indicator3.Source = new BitmapImage(new Uri("/Windows/Resources/Options/indicator_off.png", UriKind.Relative));
+        }
+
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
+                this.DragMove();
+        }
+        private void ModdedSetStart(object sender, EventArgs e)
+        {
+            GetSound3();
+            moddedSource.Source = repos.GetImage(true, configuration.Lang, "modded");
+        }
+
+        private void ModdedSetEnd(object sender, EventArgs e)
+        {
+            moddedSource.Source = repos.GetImage(false, configuration.Lang, "modded");
             options.ModdedExe = true;
+            SetModdedShtora();
         }
 
-        private void OriginalSet(object sender, EventArgs e)
+        private void OriginalSetStart(object sender, EventArgs e)
         {
+            GetSound3();
+            originalSource.Source = repos.GetImage(true, configuration.Lang, "generals");
+        }
+
+        private void OriginalSetEnd(object sender, EventArgs e)
+        {
+            originalSource.Source = repos.GetImage(false, configuration.Lang, "generals");
             options.ModdedExe = false;
+            SetGeneralsShtora();
         }
 
-        private void FixFileSet(object sender, EventArgs e)
+        private void SetGeneralsShtora()
         {
+            ClearShtorasFiles();
+            shtora2.Visibility = Visibility.Visible;
+        }
+
+        private void SetModdedShtora()
+        {
+            ClearShtorasFiles();
+            shtora1.Visibility = Visibility.Visible;
+        }
+
+        private void ClearShtorasFiles()
+        {
+            shtora1.Visibility = Visibility.Hidden;
+            shtora2.Visibility = Visibility.Hidden;
+        }
+
+        private void FixFileSetStart(object sender, EventArgs e)
+        {
+            GetSound2();
+            fixfileSource.Source = repos.GetImage(true, configuration.Lang, "fixfile");
+        }
+
+        private void FixFileSetEnd(object sender, EventArgs e)
+        {
+            fixfileSource.Source = repos.GetImage(false, configuration.Lang, "fixfile");
             options.FixFile = !options.FixFile;
+            SetIndicator1();
         }
 
-        private void AutoUpdateSet(object sender, EventArgs e)
+        private void SetIndicator1()
         {
+            if (options.FixFile)
+                indicator1.Source = new BitmapImage(new Uri("/Windows/Resources/Options/indicator_on.png", UriKind.Relative));
+            else
+                indicator1.Source = new BitmapImage(new Uri("/Windows/Resources/Options/indicator_off.png", UriKind.Relative));
+        }
+
+        private void AutoUpdateSetStart(object sender, EventArgs e)
+        {
+            GetSound3();
+            AutoUpdateSource.Source = repos.GetImage(true, configuration.Lang, "latestversion");
+        }
+
+        private void AutoUpdateSetEnd(object sender, EventArgs e)
+        {
+            AutoUpdateSource.Source = repos.GetImage(false, configuration.Lang, "latestversion");
             options.Gentool = GentoolsMode.AutoUpdate;
+            SetAutoUpdateShtora();
         }
 
-        private void CurrentVersionSet(object sender, EventArgs e)
+        private void CurrentVersionSetStart(object sender, EventArgs e)
         {
+            GetSound3();
+            CurrentVersionSource.Source = repos.GetImage(true, configuration.Lang, "currentversion");
+        }
+
+        private void CurrentVersionSetEnd(object sender, EventArgs e)
+        {
+            CurrentVersionSource.Source = repos.GetImage(false, configuration.Lang, "currentversion");
             options.Gentool = GentoolsMode.Current;
+            SetCurrentVersionShtora();
         }
 
-        private void RemoveSet(object sender, EventArgs e)
+        private void RemoveSetStart(object sender, EventArgs e)
         {
+            GetSound3();
+            RemoveSource.Source = repos.GetImage(true, configuration.Lang, "disable");
+        }
+
+        private void RemoveSetEnd(object sender, EventArgs e)
+        {
+            RemoveSource.Source = repos.GetImage(false, configuration.Lang, "disable");
             options.Gentool = GentoolsMode.Disable;
+            SetRemoveShtora();
         }
 
-        private void dbgHelpSet(object sender, EventArgs e)
+        private void SetAutoUpdateShtora()
         {
-            options.DebugFile = !options.DebugFile;
+            ClearShtorasGentools();
+            shtora3.Visibility = Visibility.Visible;
+        }
+
+        private void SetCurrentVersionShtora()
+        {
+            ClearShtorasGentools();
+            shtora4.Visibility = Visibility.Visible;
+        }
+
+        private void SetRemoveShtora()
+        {
+            ClearShtorasGentools();
+            shtora5.Visibility = Visibility.Visible;
+        }
+
+        private void ClearShtorasGentools()
+        {
+            shtora3.Visibility = Visibility.Hidden;
+            shtora4.Visibility = Visibility.Hidden;
+            shtora5.Visibility = Visibility.Hidden;
+        }
+
+        private void ApplyingStart(object sender, EventArgs e)
+        {
+            ApplySource.Source = repos.GetImage(true, configuration.Lang, "apply");
+        }
+
+        private void ApplyingEnd(object sender, EventArgs e)
+        {
+            //StopPlayers();
+            ApplySource.Source = repos.GetImage(false, configuration.Lang, "apply");
+            ApplyOptions(configuration, options);
+            this.Close();
+        }
+
+        private void DeleteOldSetStart(object sender, EventArgs e)
+        {
+            GetSound2();
+            DeleteOldSource.Source = repos.GetImage(true, configuration.Lang, "deleteold");
+        }
+
+        private void DeleteOldSetEnd(object sender, EventArgs e)
+        {
+            DeleteOldSource.Source = repos.GetImage(false, configuration.Lang, "deleteold");
+            options.DeleteOldVersions = !options.DeleteOldVersions;
+            SetIndicator2();
+        }
+
+        private void SetIndicator2()
+        {
+            if (options.DeleteOldVersions)
+                indicator2.Source = new BitmapImage(new Uri("/Windows/Resources/Options/indicator_on.png", UriKind.Relative));
+            else
+                indicator2.Source = new BitmapImage(new Uri("/Windows/Resources/Options/indicator_off.png", UriKind.Relative));
         }
 
     }

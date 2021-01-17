@@ -5,18 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeLauncherForm"
         mc:Ignorable="d"
-        Title="Download in progress..." Height="372.576" Width="550" WindowStyle="SingleBorderWindow" ResizeMode="NoResize">
+        Title="Download in progress..." Height="600" Width="600" WindowStyle="SingleBorderWindow" ResizeMode="NoResize">
     <Window.Background>
-        <ImageBrush ImageSource="Resources/Chinook.jpeg"/>
+        <ImageBrush x:Name="BackGround" ImageSource="Resources/chinook.png"/>
     </Window.Background>
     <Grid>
-        <TextBox x:Name = "Update1" IsReadOnly="True" HorizontalAlignment="Left" Height="29" Margin="10,51,0,0" TextWrapping="Wrap" Text="Update is on the way! Be Patient" FontFamily="Tahoma Bold" FontSize="18" VerticalAlignment="Top" Width="309"
-                 Background="#15FFFFFF"/>
-        <TextBox x:Name = "Update2" IsReadOnly="True" HorizontalAlignment="Left" Height="29" Margin="10,85,0,0" TextWrapping="Wrap" Text="We even have chinook GP for it!" FontFamily="Tahoma Bold" FontSize="18" VerticalAlignment="Top" Width="309"
-                 Background="#15FFFFFF"/>
-        <TextBox x:Name = "DownloadInfo" IsReadOnly="True" HorizontalAlignment="Left" Height="29" Margin="10,260,0,0" TextWrapping="Wrap" Text="" FontSize="15" VerticalAlignment="Top" Width="330"
-                 Background="LightGray"/>
-        <ProgressBar x:Name = "ProgressBar" Minimum="0"  Maximum="100" HorizontalAlignment="Left" Height="30" Margin="10,300,0,0" VerticalAlignment="Top" Width="330"/>
+        <Image x:Name="Info" Source="/Windows/Resources/info_eng.png" HorizontalAlignment="Left" Height="572" VerticalAlignment="Top" Width="594"/>
 
+        <TextBox x:Name = "DownloadInfo" Text="" IsReadOnly="True" FontFamily="Tahoma" HorizontalAlignment="Left" Height="30" Margin="284,382,0,0" TextWrapping="Wrap"  FontSize="15" VerticalAlignment="Top" Width="246"
+                 Background="LightGray"/>
+        <ProgressBar x:Name = "ProgressBar" Minimum="0"  Maximum="100" HorizontalAlignment="Left" Height="42" Margin="284,434,0,0" VerticalAlignment="Top" Width="246"/>
+        
     </Grid>
 </Window>

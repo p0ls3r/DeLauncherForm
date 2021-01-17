@@ -8,11 +8,11 @@ namespace DeLauncherForm
 {
     static class GameLauncher
     {               
-        public static void Launch(FormConfiguration conf, LaunchOptions options)
-        {            
-            SetRotrFiles();            
+        public static void Launch(FormConfiguration conf, LaunchOptions options, bool worldBuilderLaunch)
+        {
+            LocalFilesWorker.SetROTRFiles(conf);
 
-            var id = StartGame(conf, options);
+            var id = StartExe(conf, options, worldBuilderLaunch);
 
             var mon = new Monitor(id);
             mon.StartMonitoring();
@@ -22,39 +22,35 @@ namespace DeLauncherForm
                 Thread.Sleep(5000);
             }
 
-            SetRotrFilesBack();
+            LocalFilesWorker.SetROTRFilesBack();
         }
 
         public static async Task PrepareWithUpdate(FormConfiguration conf)
-        {            
+        {
             LocalFilesWorker.RemoveOldVersions(conf, null);
-            await ReposWorker.LoadActualPatch(conf);
+            await ReposWorker.LoadActualPatch(conf);            
         }
         public static void PrepareWithoutUpdate(FormConfiguration conf, PatchInfo exceptionFile)
         {            
             LocalFilesWorker.RemoveOldVersions(conf, exceptionFile);
         }
 
-        public static void SetRotrFiles()
-        {            
-            LocalFilesWorker.SetROTRFiles();
-        }
-
-        public static void SetRotrFilesBack()
+        private static int StartExe(FormConfiguration conf, LaunchOptions options, bool worldBuilderLaunch)
         {
-            LocalFilesWorker.SetROTRFilesBack();
-        }
+            Process process;
 
-        private static int StartGame(FormConfiguration conf, LaunchOptions options)
-        {            
+            if (worldBuilderLaunch)
+            {
+                process = Process.Start(EntryPoint.WorldBuilderFile);
+                return process.Id;
+            }
+
             var parameters = "";
 
             if (conf.Windowed)
                 parameters += "-win ";
             if (conf.QuickStart)
-                parameters += "-quickstart";
-
-            Process process;
+                parameters += "-quickstart";            
 
             if(!options.ModdedExe)
                 process = Process.Start(EntryPoint.GameFile, parameters);

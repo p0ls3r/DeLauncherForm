@@ -181,8 +181,6 @@ namespace DeLauncherForm
             }
 
             File.Delete(genToolZipFileName);
-
-            Console.WriteLine("Downloaded and Extracted");
         }
     }
 }

@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-C:\Users\miste\source\repos\DeLauncherForm\DeLauncherForm-master\DeLauncherForm\obj\Debug\
+D:\DeLauncherForm\DeLauncherForm\obj\Debug\
 DeLauncherForm
 none
 false
 DEBUG;TRACE
-C:\Users\miste\source\repos\DeLauncherForm\DeLauncherForm-master\DeLauncherForm\App.xaml
+D:\DeLauncherForm\DeLauncherForm\App.xaml
 6110671535
 
-36-889615205
-18471917411
+361599151271
+18-953966757
 Windows\AbortWindow.xaml;Windows\ApplyingOptions.xaml;Windows\DownloadWindow.xaml;Windows\GentoolUpdateFailed.xaml;Windows\MainWindow.xaml;Windows\Options.xaml;
 
 False

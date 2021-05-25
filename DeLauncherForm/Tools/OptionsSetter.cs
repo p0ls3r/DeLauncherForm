@@ -5,7 +5,8 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net;
-using System.Web.Script.Serialization;
+using System.Text.Json;
+// using Newtonsoft.Json;
 
 namespace DeLauncherForm
 {
@@ -76,7 +77,7 @@ namespace DeLauncherForm
 
             var contentsUrl = $"https://api.github.com/repos/{repo}/contents";
 
-            dynamic contents = new JavaScriptSerializer().DeserializeObject(httpClient.GetStringAsync(contentsUrl).GetAwaiter().GetResult());
+            dynamic contents = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(httpClient.GetStringAsync(contentsUrl).GetAwaiter().GetResult());
 
             foreach (var content in contents)
             {

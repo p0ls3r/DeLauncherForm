@@ -20,8 +20,10 @@ namespace DeLauncherForm
         public MediaPlayer player1 = new MediaPlayer();
         public MediaPlayer player2 = new MediaPlayer();
         public MediaPlayer player3 = new MediaPlayer();
+        public MediaPlayer player4 = new MediaPlayer();
 
         private bool noInternet = false;
+        private int theCode = 0;
 
         public MainWindow(FormConfiguration cfg, LaunchOptions opt)
         {            
@@ -32,6 +34,7 @@ namespace DeLauncherForm
             this.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
 
             LocalFilesWorker.ClearTempFiles();
+            LocalFilesWorker.ConvertBigsToGibs();
 
             InitializeComponent();
             ApplyConfig();
@@ -42,13 +45,14 @@ namespace DeLauncherForm
             //var connection = ConnectionChecker.ConnectionStatus.NotConnected;
 
             if (connection == ConnectionChecker.ConnectionStatus.NotConnected)
-                NoInternetSettings();
+                NoInternetMode();
             else
                 CheckAndUpdate();
 
             SetButtonsBindings();           
         }
 
+        #region SoundsHandlers
         private void StopPlayers()
         {
             if (options.Sounds)
@@ -56,6 +60,7 @@ namespace DeLauncherForm
                 player1.Close();
                 player2.Close();
                 player3.Close();
+                player4.Close();
             }
         }
 
@@ -73,7 +78,7 @@ namespace DeLauncherForm
             if (options.Sounds)
             {
                 StopPlayers();
-                player3.Open(new Uri(EntryPoint.LauncherFolder + "press1.wav", UriKind.Relative));
+                player3.Open(new Uri(EntryPoint.LauncherFolder + "press1_new.wav", UriKind.Relative));
                 SetVolume();
                 player3.Play();
             }
@@ -101,13 +106,27 @@ namespace DeLauncherForm
             }
         }
 
+        private void GetSound4()
+        {
+            if (options.Sounds)
+            {
+                StopPlayers();
+                player4.Open(new Uri(EntryPoint.LauncherFolder + "press4.wav", UriKind.Relative));
+                SetVolume();
+                player4.Play();
+            }
+        }
+
         private void ClosePlayers(object sender, EventArgs e)
         {
             player1.Volume = 0;
             player2.Volume = 0;
             player3.Volume = 0;
+            player4.Volume = 0;
             StopPlayers();
         }
+
+        #endregion
 
         public void ShowWindow(FormConfiguration cfg, LaunchOptions opt)
         {
@@ -131,24 +150,85 @@ namespace DeLauncherForm
                 await Task.Run(() => Updater.DownloadUpdate());
         }
 
-        private void NoInternetSettings()
+        private void NoInternetMode()
         {
-            noInternet = true;
-            configuration.Patch = new Vanilla();
-            BP.Visibility = Visibility.Collapsed;
-            HP.Visibility = Visibility.Collapsed;
             gifImage.Opacity = 0;
             NoInternet.Opacity = 100;
-
-            configuration.Patch = new Vanilla();
-            SetVanillaShtora();            
+            SetVanillaShtora();
 
             AdvancedOptions.Visibility = Visibility.Collapsed;
+            ManualFileSelect.Visibility = Visibility.Collapsed;            
+
+            ManualFileMode();
+        }
+
+        private void ManualFileMode()
+        {
+            if (theCode == 3)
+            {
+                theCode = 4;
+            }
+            else
+                theCode = 0;
+
+            configuration.Patch = new Vanilla();
+            configuration.ManualFile = true;
+            BackGrondImage2.Visibility = Visibility.Visible;            
+
+
+            string prevFile = null;
+            if (configuration.PreviousActivatedFiles.Count > 0)
+               prevFile = configuration.PreviousActivatedFiles[0];
+
+            FilesList.Items.Clear();
+
+            foreach (var file in LocalFilesWorker.GetPatchFileNames())
+                FilesList.Items.Add(file);
+
+            var fileFounded = false;
+
+            if (prevFile != null)
+                foreach (var file in FilesList.Items)
+                {
+                    if (file.ToString() == prevFile)
+                    {
+                        FilesList.SelectedItem = file;
+                        configuration.PreviousActivatedFiles.Clear();
+                        configuration.PreviousActivatedFiles.Add(file.ToString());
+                        fileFounded = true;
+                        ClearShtora();
+                    }
+                }
+
+            if (theCode == 4)
+                FilesList.Items.Add("КОД56-24-81АЛЬФА");
+
+            if (!fileFounded)
+                SetVanillaShtora();
+
+            BP.Visibility = Visibility.Collapsed;
+            HP.Visibility = Visibility.Collapsed;
+            FilesList.Visibility = Visibility.Visible;
+
+            ShtoraManual.Visibility = Visibility.Visible;
 
             HPChanglog.Visibility = Visibility.Collapsed;
             BPChanglog.Visibility = Visibility.Collapsed;
         }
 
+        private void AutoUpdateMode()
+        {
+            BackGrondImage2.Visibility = Visibility.Hidden;
+            BP.Visibility = Visibility.Visible;
+            HP.Visibility = Visibility.Visible;
+
+            FilesList.Visibility = Visibility.Collapsed;
+
+            HPChanglog.Visibility = Visibility.Visible;
+            BPChanglog.Visibility = Visibility.Visible;            
+        }
+
+        #region WindowPreparation
         private void SetButtonsBindings()
         {
             launch.PreviewMouseLeftButtonDown += LaunchStart;
@@ -169,11 +249,16 @@ namespace DeLauncherForm
             Vanilla.PreviewMouseLeftButtonUp += VanillaSetEnd;
             AdvancedOptions.PreviewMouseLeftButtonDown += AdvancedOptionsWindowStart;
             AdvancedOptions.PreviewMouseLeftButtonUp += AdvancedOptionsWindowEnd;
+            FilesList.SelectionChanged += FilesListSelectionChanged;
 
             HPChanglog.PreviewMouseLeftButtonDown += OpenHPChangeLogStart;
             HPChanglog.PreviewMouseLeftButtonUp += OpenHPChangeLogEnd;
             BPChanglog.PreviewMouseLeftButtonDown += OpenBPChangeLogStart;
-            BPChanglog.PreviewMouseLeftButtonUp += OpenBPChangeLogEnd;          
+            BPChanglog.PreviewMouseLeftButtonUp += OpenBPChangeLogEnd;
+
+            ManualFileSelect.PreviewMouseLeftButtonDown += ManualFileSelectStart;
+            ManualFileSelect.PreviewMouseLeftButtonUp += ManualFileSelectEnd;
+
 
             this.MouseDown += Window_MouseDown;
             this.Closing += SaveConfigAndOptions;
@@ -182,32 +267,6 @@ namespace DeLauncherForm
             Rus.Click += RusSet;
             Eng.Click += EngSet;
         }        
-
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (Mouse.LeftButton == MouseButtonState.Pressed)
-                this.DragMove();
-        }
-
-        private void AdvancedOptionsWindowStart(object sender, EventArgs e)
-        {
-            //StopPlayers();
-            OptionsSource.Source = repos.GetImage(true, configuration.Lang, "options");
-        }
-
-        private void AdvancedOptionsWindowEnd(object sender, EventArgs e)
-        {            
-            OptionsSource.Source = repos.GetImage(false, configuration.Lang, "options");
-            this.Hide();
-            Windows.Options optionsWindow = new Windows.Options(configuration, options, repos)
-            {
-                WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen,
-            };
-
-            optionsWindow.ApplyOptions += ShowWindow;
-            optionsWindow.CloseWindow += ShowWindow;
-            optionsWindow.Show();
-        }
 
         private void ApplyConfig()
         {
@@ -230,11 +289,18 @@ namespace DeLauncherForm
             }
 
             if (configuration.Lang == DeLauncherForm.Language.Eng)
-              SetEngLang();
+                SetEngLang();
 
 
             if (configuration.Lang == DeLauncherForm.Language.Rus)
-              SetRusLang();
+                SetRusLang();            
+
+
+            if (!configuration.ManualFile)
+                FilesList.Visibility = Visibility.Hidden;
+            else
+                ManualFileMode();
+
 
             VersionInfo.Content = typeof(EntryPoint).Assembly.GetName().Version.ToString();
         }
@@ -247,6 +313,7 @@ namespace DeLauncherForm
             QuickStartSource.Source = repos.GetImage(false, r, "quickstart");
             WindowedSource.Source = repos.GetImage(false, r, "windowed");
             ExitSource.Source = repos.GetImage(false, r, "exit");
+            ManualFileSelectSource.Source = repos.GetImage(false, r, "manual");
 
             BPSource.Source = repos.GetImage(false, r, "BP");
             HPSource.Source = repos.GetImage(false, r, "HP");
@@ -257,7 +324,7 @@ namespace DeLauncherForm
             WorldbuilderSource.Source = repos.GetImage(false, Lng.Eng, "worldbuilder");
 
             OptionsSource.Source = repos.GetImage(false, r, "options");
-            
+
             InfoAll.Source = new BitmapImage(new Uri("/Windows/Resources/Main/info_r.png", UriKind.Relative));
 
             NoInternet.Source = new BitmapImage(new Uri("/Windows/Resources/Main/nointernet_r.png", UriKind.Relative));
@@ -275,6 +342,7 @@ namespace DeLauncherForm
             WindowedSource.Source = repos.GetImage(false, e, "windowed");
             ExitSource.Source = repos.GetImage(false, e, "exit");
 
+            ManualFileSelectSource.Source = repos.GetImage(false, e, "manual");
             HPChangelogSource.Source = repos.GetImage(false, e, "changelog");
             BPChangelogSource.Source = repos.GetImage(false, e, "changelog");
             WorldbuilderSource.Source = repos.GetImage(false, e, "worldbuilder");
@@ -293,8 +361,34 @@ namespace DeLauncherForm
             NoInternet.Source = new BitmapImage(new Uri("/Windows/Resources/Main/nointernet_e.png", UriKind.Relative));
         }
 
+        #endregion
+
+        private void AdvancedOptionsWindowStart(object sender, EventArgs e)
+        {
+            OptionsSource.Source = repos.GetImage(true, configuration.Lang, "options");
+        }
+
+        private void AdvancedOptionsWindowEnd(object sender, EventArgs e)
+        {
+            theCode = 0;
+            OptionsSource.Source = repos.GetImage(false, configuration.Lang, "options");
+            this.Hide();
+            Windows.Options optionsWindow = new Windows.Options(configuration, options, repos)
+            {
+                WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen,
+            };
+
+            optionsWindow.ApplyOptions += ShowWindow;
+            optionsWindow.CloseWindow += ShowWindow;
+            optionsWindow.Show();
+        }        
+
         private void SaveConfigAndOptions(object sender, EventArgs e)
         {
+            configuration.PreviousActivatedFiles.Clear();
+            if (FilesList.SelectedItem != null)
+              configuration.PreviousActivatedFiles.Add(FilesList.SelectedItem.ToString());
+
             XmlData.SaveConfiguration(configuration);
             XmlData.SaveOptions(options);
         }
@@ -320,10 +414,129 @@ namespace DeLauncherForm
             await OptionsSetter.CheckAndApplyOptions(options);
 
             optionsWindow.Close();
+        }        
+
+        #region LaunchLogic
+        private void Launch(bool worldBuilderLaunch)
+        {
+            if (configuration.ManualFile && FilesList.SelectedItem != null && FilesList.SelectedItem.ToString() == "КОД56-24-81АЛЬФА")
+            {
+                GetSound4();
+                System.Diagnostics.Process.Start(EntryPoint.BPLogUL);
+                return;
+            }
+            theCode = 0;
+
+            //кейс нет интернета и/или мануал мод
+            if (configuration.ManualFile && FilesList.SelectedItem != null)
+            {
+                var fileName = FilesList.SelectedItem.ToString();
+
+                LaunchManualSelectedFile(fileName, worldBuilderLaunch);
+
+                return;
+            }
+
+            if (configuration.ManualFile && FilesList.SelectedItem == null)
+            {
+                LaunchWithoutUpdate(worldBuilderLaunch);
+                return;
+            }
+
+            if (LocalFilesWorker.CheckPatchFileExist(configuration.Patch) && (LocalFilesWorker.GetCurrentVersionNumber(configuration.Patch) < ReposWorker.GetLatestPatchNumber(configuration.Patch)))
+            {
+                LaunchWithUpdate(worldBuilderLaunch);
+                return;
+            }
+
+            if (!LocalFilesWorker.CheckPatchFileExist(configuration.Patch))
+            {
+                LaunchWithUpdate(worldBuilderLaunch);
+                return;
+            }
+
+            LaunchWithoutUpdate(worldBuilderLaunch);
         }
 
-        private void LaunchWorldBuilderStart(object sender, RoutedEventArgs e)
+
+        private async void LaunchManualSelectedFile(string fileName,bool worldBuilderLaunch)
+        {
+            if (!noInternet && !worldBuilderLaunch)
+                await CheckAndApplyOptions();
+
+            if (fileName.Contains("HP"))
+                configuration.Patch = new HPatch();
+
+            if (fileName.Contains("BP"))
+                configuration.Patch = new BPatch();
+
+            LocalFilesWorker.ActivateFileByName(fileName);
+
+            this.Hide();
+
+            SaveConfigAndOptions(this, null);
+            await Task.Run(() => GameLauncher.Launch(configuration, options, worldBuilderLaunch));            
+            this.Close();
+        }
+
+        private async void LaunchWithoutUpdate(bool worldBuilderLaunch)
+        {
+            if (!noInternet && !worldBuilderLaunch)
+                await CheckAndApplyOptions();
+
+            this.Hide();
+
+            await Task.Run(() =>
+            {
+                foreach (var file in LocalFilesWorker.GetLatestPatchFileNames(configuration.Patch))
+                    LocalFilesWorker.ActivateFileByName(file);
+            });
+
+            SaveConfigAndOptions(this, null);
+            await Task.Run(() => GameLauncher.Launch(configuration, options, worldBuilderLaunch));            
+            this.Close();
+        }
+
+        private async void LaunchWithUpdate(bool worldBuilderLaunch)
         {            
+            if (!noInternet && !worldBuilderLaunch)
+                await CheckAndApplyOptions();
+
+            DownloadWindow downloadWindow = new DownloadWindow(configuration);
+            downloadWindow.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+
+            ReposWorker.DownloadStatusChanged += downloadWindow.UpdateInformation;
+            downloadWindow.Show();
+
+            this.Hide();
+
+            await GameLauncher.PrepareWithUpdate(configuration);
+            downloadWindow.Hide();
+
+            LocalFilesWorker.ConvertBigsToGibs();
+            foreach (var file in LocalFilesWorker.GetLatestPatchFileNames(configuration.Patch))
+            {
+                if (!String.IsNullOrEmpty(file))
+                  LocalFilesWorker.ActivateFileByName(file);
+            }
+
+            SaveConfigAndOptions(this, null);
+            await Task.Run(() => GameLauncher.Launch(configuration, options, worldBuilderLaunch));
+            
+            downloadWindow.Close();
+            this.Close();
+        }
+
+        #endregion
+
+        #region WindowHandlers
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
+                this.DragMove();
+        }
+        private void LaunchWorldBuilderStart(object sender, RoutedEventArgs e)
+        {
             WorldbuilderSource.Source = repos.GetImage(true, Lng.Eng, "worldbuilder");
         }
         private void LaunchWorldBuilderEnd(object sender, RoutedEventArgs e)
@@ -334,7 +547,7 @@ namespace DeLauncherForm
             Launch(true);
         }
         private void LaunchStart(object sender, RoutedEventArgs e)
-        {            
+        {
             launchSource.Source = repos.GetImage(true, configuration.Lang, "launch");
         }
         private void LaunchEnd(object sender, RoutedEventArgs e)
@@ -344,67 +557,6 @@ namespace DeLauncherForm
             //запускаем игру
             Launch(false);
         }
-
-        private void Launch(bool worldBuilderLaunch)
-        {
-            LocalFilesWorker.RemoveBigs();
-            //кейс без интернета - активируем ванилу, запускаем ваниллу
-            if (noInternet)
-            {
-                LocalFilesWorker.GetCurrentVersionNumberFromGib(new PatchInfo(configuration.Patch), false);
-                LaunchWithoutUpdate(configuration, new PatchInfo(configuration.Patch), worldBuilderLaunch);
-                return;
-            }
-
-            //получаем последнюю версию из репозитория
-            var reposVersion = ReposWorker.GetLatestPatchInfo(configuration);
-
-            //кейс когда есть файл гиб нужной версии - активируем его и запускаем без обновления
-            if (LocalFilesWorker.GetCurrentVersionNumberFromGib(reposVersion, options.DeleteOldVersions))
-            {
-                LaunchWithoutUpdate(configuration, reposVersion, worldBuilderLaunch);
-                return;
-            }
-
-            //кейс когда нет нужной версии локально
-            LaunchWithUpdate(configuration, worldBuilderLaunch);
-        }
-
-        private async void LaunchWithoutUpdate(FormConfiguration conf, PatchInfo info, bool worldBuilderLaunch)
-        {
-            if (!noInternet && !worldBuilderLaunch)
-                await CheckAndApplyOptions();
-
-            this.Hide();
-            await Task.Run(() => GameLauncher.PrepareWithoutUpdate(conf, info));
-            await Task.Run(() => GameLauncher.Launch(conf, options, worldBuilderLaunch));
-            SaveConfigAndOptions(this, null);
-            this.Close();
-        }
-
-        private async void LaunchWithUpdate(FormConfiguration conf, bool worldBuilderLaunch)
-        {
-            if (!noInternet && !worldBuilderLaunch)
-                await CheckAndApplyOptions();
-
-            DownloadWindow downloadWindow = new DownloadWindow(conf);
-            downloadWindow.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
-
-            ReposWorker.DownloadStatusChanged += downloadWindow.UpdateInformation;
-            downloadWindow.Show();
-
-            this.Hide();
-
-            await GameLauncher.PrepareWithUpdate(conf);
-            downloadWindow.Hide();
-            await Task.Run(() => GameLauncher.Launch(conf, options, worldBuilderLaunch));
-
-            SaveConfigAndOptions(this, null);
-            downloadWindow.Close();
-            this.Close();
-        }
-
-
         private void SetHPShtora()
         {
             ClearShtora();
@@ -421,6 +573,8 @@ namespace DeLauncherForm
         {
             ClearShtora();
             ShtoraVanilla.Visibility = Visibility.Visible;
+            if (configuration.ManualFile)
+                ShtoraManual.Visibility = Visibility.Visible;
         }
 
         private void ClearShtora()
@@ -428,6 +582,7 @@ namespace DeLauncherForm
             ShtoraBP.Visibility = Visibility.Hidden;
             ShtoraHP.Visibility = Visibility.Hidden;
             ShtoraVanilla.Visibility = Visibility.Hidden;
+            ShtoraManual.Visibility = Visibility.Hidden;
         }
 
         private void QuickStartStart(object sender, RoutedEventArgs e)
@@ -441,6 +596,41 @@ namespace DeLauncherForm
             configuration.QuickStart = !configuration.QuickStart;
             QuickStartIndicatorStatusChange(configuration.QuickStart);
             GetSound2();
+            theCode = 0;
+        }
+
+        private void ManualFileSelectStart(object sender, RoutedEventArgs e)
+        {
+            ManualFileSelectSource.Source = repos.GetImage(true, configuration.Lang, "manual");
+        }
+
+        private void ManualFileSelectEnd(object sender, RoutedEventArgs e)
+        {
+            configuration.ManualFile = !configuration.ManualFile;
+            ManualFileSelectSource.Source = repos.GetImage(false, configuration.Lang, "manual");
+
+            if (!configuration.ManualFile)
+            {                
+                AutoUpdateMode();
+                configuration.Patch = new Vanilla();
+                SetVanillaShtora();
+            }
+            else
+                ManualFileMode();
+
+            GetSound1();
+        }
+
+        private void FilesListSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (FilesList.SelectedItem != null)
+            {
+                configuration.PreviousActivatedFiles.Clear();
+                configuration.PreviousActivatedFiles.Add(FilesList.SelectedItem.ToString());
+            }
+            ClearShtora();
+            if (configuration.ManualFile)
+                ShtoraManual.Visibility = Visibility.Visible;
         }
 
         private void WindowedStart(object sender, RoutedEventArgs e)
@@ -454,6 +644,7 @@ namespace DeLauncherForm
             configuration.Windowed = !configuration.Windowed;
             WindowedIndicatorStatusChange(configuration.Windowed);
             GetSound2();
+            theCode = 0;
         }
 
         private void QuickStartIndicatorStatusChange(bool status)
@@ -475,16 +666,22 @@ namespace DeLauncherForm
         private void BPSetStart(object sender, RoutedEventArgs e)
         {            
             BPSource.Source = repos.GetImage(true, configuration.Lang, "BP");
+            theCode = 1;
         }
 
         private void HPSetStart(object sender, RoutedEventArgs e)
         {            
             HPSource.Source = repos.GetImage(true, configuration.Lang, "HP");
+            if (theCode == 1)
+                theCode = 2;
+            else
+                theCode = 0;
         }
 
         private void VanillaSetStart(object sender, RoutedEventArgs e)
         {            
             VanillaSource.Source = repos.GetImage(true, configuration.Lang, "vanilla");
+            theCode = 0;
         }
 
         private void BPSetEnd(object sender, RoutedEventArgs e)
@@ -507,6 +704,12 @@ namespace DeLauncherForm
         {
             VanillaSource.Source = repos.GetImage(false, configuration.Lang, "vanilla");
             configuration.Patch = new Vanilla();
+            if (configuration.ManualFile)
+            {
+                FilesList.SelectedItem = null;
+                configuration.PreviousActivatedFiles.Clear();                
+            }
+
             SetVanillaShtora();
             GetSound3();
         }
@@ -514,11 +717,13 @@ namespace DeLauncherForm
         private void OpenHPChangeLogStart(object sender, RoutedEventArgs e)
         {            
             HPChangelogSource.Source = repos.GetImage(true, Lng.Eng, "changelog");
+            theCode = 0;
         }
 
         private void OpenBPChangeLogStart(object sender, RoutedEventArgs e)
         {            
             BPChangelogSource.Source = repos.GetImage(true, Lng.Eng, "changelog");
+            theCode = 0;
         }
 
         private void OpenHPChangeLogEnd(object sender, RoutedEventArgs e)
@@ -539,12 +744,17 @@ namespace DeLauncherForm
         {           
             configuration.Lang = DeLauncherForm.Language.Rus;
             SetRusLang();
+            if (theCode == 2)
+                theCode = 3;
+            else
+                theCode = 0;
         }
 
         private void EngSet(object sender, RoutedEventArgs e)
         {
             configuration.Lang = DeLauncherForm.Language.Eng;
             SetEngLang();
+            theCode = 0;
         }
 
         private void GoExitStart(object sender, RoutedEventArgs e)
@@ -557,5 +767,7 @@ namespace DeLauncherForm
             ExitSource.Source = repos.GetImage(false, configuration.Lang, "exit");
             this.Close();
         }
+
+        #endregion
     }
 }

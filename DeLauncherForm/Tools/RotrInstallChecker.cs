@@ -13,6 +13,7 @@ namespace DeLauncherForm.Tools
             //Tests
             if (File.Exists("GodMode13.debug")) return;
 
+
             //1.87
             if (!File.Exists("!!Rotr_Intrnl_Main.gib") && !File.Exists("!!Rotr_Intrnl_Main.big"))
                 ErrorMessage("ROTR 1.87 PB 2.0 not detected. Move the Delauncher.exe to the game with mod folder, or install/reinstall ROTR mod \r" +
@@ -23,10 +24,17 @@ namespace DeLauncherForm.Tools
                 ErrorMessage("ROTR 1.87 PB 2.0 not detected. Move the Delauncher.exe to the game with mod folder, or install/reinstall ROTR mod \r" +
                     "ROTR 1.87 PB 2.0 не обнаружен. Переместите файл Delauncher.exe в папку с игрой и модом или установите/переустановите ROTR мод", "Installation error");
 
+
             //1.86
             if (!File.Exists("!!Rotr_Patch.gib") && !File.Exists("!!Rotr_Patch.big"))
                 ErrorMessage("ROTR 1.86 not detected. Move the Delauncher.exe to the game with mod folder, or install/reinstall ROTR mod \r" +
                     "ROTR 1.86 не обнаружен. Переместите файл Delauncher.exe в папку с игрой и модом или установите/переустановите ROTR мод", "Installation error");
+
+            if ((File.Exists("!!Rotr_Patch.gib") && ComputeMD5Checksum("!!Rotr_Patch.gib") != "98F1240E5A2FE240177456FE751C14E6") ||
+                (File.Exists("!!Rotr_Patch.big") && ComputeMD5Checksum("!!Rotr_Patch.big") != "98F1240E5A2FE240177456FE751C14E6"))
+                ErrorMessage("ROTR 1.86 not detected. Move the Delauncher.exe to the game with mod folder, or install/reinstall ROTR mod \r" +
+                    "ROTR 1.86 не обнаружен. Переместите файл Delauncher.exe в папку с игрой и модом или установите/переустановите ROTR мод", "Installation error");
+
 
             //1.85
             if (!File.Exists("!Rotr_Textures.gib") && !File.Exists("!Rotr_Textures.big"))

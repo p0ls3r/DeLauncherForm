@@ -63,6 +63,8 @@ namespace DeLauncherForm
             AddImageByEvidences(true, Lng.Eng, "changelog", "CHANGELOG 2.png");
             AddImageByEvidences(false, Lng.Eng, "changelog", "CHANGELOG.png");
 
+            AddImageByEvidences(false, Lng.Eng, "manual", "MANUAL.png");
+            AddImageByEvidences(false, Lng.Rus, "manual", "MANUAL PYC.png");
             AddImageByEvidences(false, Lng.Eng, "BP", "BALANCEPATCH.png");
             AddImageByEvidences(false, Lng.Rus, "BP", "BALANCEPATCH PYC.png");
             AddImageByEvidences(false, Lng.Eng, "exit", "EXIT.png");
@@ -80,6 +82,8 @@ namespace DeLauncherForm
             AddImageByEvidences(false, Lng.Eng, "windowed", "WINDOWED.png");
             AddImageByEvidences(false, Lng.Rus, "windowed", "WINDOWED PYC.png");
 
+            AddImageByEvidences(true, Lng.Eng, "manual", "MANUAL 2.png");
+            AddImageByEvidences(true, Lng.Rus, "manual", "MANUAL PYC 2.png");
             AddImageByEvidences(true, Lng.Eng, "BP", "BALANCEPATCH 2.png");
             AddImageByEvidences(true, Lng.Rus, "BP", "BALANCEPATCH PYC 2.png");
             AddImageByEvidences(true, Lng.Eng, "exit", "EXIT 2.png");

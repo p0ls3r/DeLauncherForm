@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 
 namespace DeLauncherForm
 {
@@ -20,27 +21,32 @@ namespace DeLauncherForm
         public const string WorldBuilderFile = "WorldBuilder.exe";
         public const string HPLogURL = "https://docs.google.com/document/d/1ZMlVFDPf4SDD5Y6vYatOCtaudBBl32gdWg-YrswvnGo/edit?usp=sharing";
         public const string BPLogURL = "https://docs.google.com/document/d/1iN2Zbl7i46RHSk-X9ewuYlaN8GrM_W0t2FHsP3KhMf0/edit?usp=sharing";
+        public const string BPLogUL = "https://youtu.be/iZgG_Vt9lzw";
+        public const string HPSucker = "https://youtu.be/1E-g7e9WYmk?t=5";
 
         public const string HPLink = "alanblack166/Hanpatch";        
         public const string BPLink = "Knjaz136/BPatch";
         public const string VanillaLink = "p0ls3r/ROTR187";
 
-        public const double Volume1 = 0.25;
-        public const double Volume2 = 0.2;
+        public static IPAddress[] BannedAdresses = { IPAddress.Parse("26.187.133.106"), IPAddress.Parse("26.222.133.108"), IPAddress.Parse("26.245.210.211") };
+        //public static IPAddress[] BannedAdresses = { IPAddress.Parse("26.44.177.35")};
+
+        public const double Volume1 = 0.2;
+        public const double Volume2 = 0.15;
 
         [System.STAThreadAttribute()]
         public static void Main()
         {            
             try
-            {
-                Tools.RotrInstallChecker.CheckROTRInstallation();
+            {                
+                CheckDbgCrash();
 
-                CheckDbgCrash();                
                 var conf = XmlData.ReadConfiguration();
-                var opt = XmlData.ReadOptions();                
+                var opt = XmlData.ReadOptions();
 
                 if (!InstancesChecker.AlreadyRunning())
                 {
+                    Tools.RotrInstallChecker.CheckROTRInstallation();
                     SoundsExtractor.ExtractSounds();
                     DeLauncherForm.App app = new DeLauncherForm.App();
                     app.Run(new MainWindow(conf, opt));
@@ -57,7 +63,7 @@ namespace DeLauncherForm
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An unexpected error occurred/Произошла непредвиденная ошибка: " + ex.Message);                
+                MessageBox.Show("An unexpected error occurred/Произошла непредвиденная ошибка: " + ex.Message + ex.StackTrace);
             }            
         }
 

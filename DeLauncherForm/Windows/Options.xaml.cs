@@ -72,8 +72,8 @@ namespace DeLauncherForm.Windows
             if (options.Sounds)
             {
                 StopPlayers();
-                player3.Open(new Uri(EntryPoint.LauncherFolder + "press1.wav", UriKind.Relative));
                 SetVolume();
+                player3.Open(new Uri(EntryPoint.LauncherFolder + "press1_new.wav", UriKind.Relative));
                 player3.Play();
             }
         }
@@ -83,8 +83,8 @@ namespace DeLauncherForm.Windows
             if (options.Sounds)
             {
                 StopPlayers();
-                player1.Open(new Uri(EntryPoint.LauncherFolder + "press2.wav", UriKind.Relative));
                 SetVolume();
+                player1.Open(new Uri(EntryPoint.LauncherFolder + "press2.wav", UriKind.Relative));               
                 player1.Play();
             }
         }
@@ -94,8 +94,8 @@ namespace DeLauncherForm.Windows
             if (options.Sounds)
             {
                 StopPlayers();
-                player2.Open(new Uri(EntryPoint.LauncherFolder + "press3.wav", UriKind.Relative));
                 SetVolume();
+                player2.Open(new Uri(EntryPoint.LauncherFolder + "press3.wav", UriKind.Relative));                
                 player2.Play();
             }
         }
@@ -126,7 +126,7 @@ namespace DeLauncherForm.Windows
         }
 
         private void SetButtonsImages()
-        {
+        {            
             moddedSource.Source = repos.GetImage(false, configuration.Lang, "modded");
             originalSource.Source = repos.GetImage(false, configuration.Lang, "generals");
 
@@ -158,6 +158,7 @@ namespace DeLauncherForm.Windows
                 SetCurrentVersionShtora();
             if (options.Gentool == GentoolsMode.Disable)
                 SetRemoveShtora();
+            
         }
         private void SetButtonsBindings()
         {
@@ -214,7 +215,7 @@ namespace DeLauncherForm.Windows
                 this.DragMove();
         }
         private void ModdedSetStart(object sender, EventArgs e)
-        {
+        {            
             GetSound3();
             moddedSource.Source = repos.GetImage(true, configuration.Lang, "modded");
         }

@@ -46,15 +46,16 @@ namespace DeLauncherForm
                 File.Delete(archiveName);          
         }
 
-        public static PatchInfo GetLatestPatchInfo(FormConfiguration conf)
+        //Получить последнюю номер последней версии патча из репозитория
+        public static int GetLatestPatchNumber(Patch patch)
         {
             //особый кейс
-            if (conf.Patch is Vanilla)
-                return new PatchInfo(new Vanilla());            
+            if (patch is Vanilla)
+                return new Vanilla().PatchVersion;            
 
             int versionNumber = 0;
 
-            foreach (var parsedData in GetRepoContent(conf))
+            foreach (var parsedData in GetRepoContent(patch))
             {
                 var fileName = (string)parsedData["name"];
                 if ((fileName[fileName.Length - 1] == 'g' && fileName[fileName.Length - 2] == 'i' && fileName[fileName.Length - 3] == 'b' && fileName[fileName.Length - 4] == '.') ||
@@ -62,21 +63,15 @@ namespace DeLauncherForm
                     versionNumber = LocalFilesWorker.GetVersionNumberFromPatchName(fileName);
             }
 
-            if (conf.Patch is BPatch)
-                return new PatchInfo(new BPatch(versionNumber));
-
-            if (conf.Patch is HPatch)
-                return new PatchInfo(new HPatch(versionNumber));
-
-            return new PatchInfo(new None());
+            return versionNumber;
         }
 
-        public static async Task LoadActualPatch(FormConfiguration conf)
+        public static async Task LoadActualPatch(Patch patch)
         {
-            if (conf.Patch is None)
+            if (patch is None)
                 return;            
 
-            foreach (var parsedData in GetRepoContent(conf))
+            foreach (var parsedData in GetRepoContent(patch))
             {
                 if ((string)parsedData["type"] == "file")
                 {
@@ -93,9 +88,9 @@ namespace DeLauncherForm
             }
         }
 
-        private static IEnumerable<Dictionary<string, object>> GetRepoContent(FormConfiguration conf)
+        private static IEnumerable<Dictionary<string, object>> GetRepoContent(Patch patch)
         {
-            var repo = SetRepository(conf);
+            var repo = patch.Repository;
 
             var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.UserAgent.Add(
@@ -127,10 +122,6 @@ namespace DeLauncherForm
                 var task = client.DownloadFileTaskAsync(uri, fileName + "temp");
                 return task;
             }
-        }
-        private static string SetRepository(FormConfiguration conf)
-        {
-            return conf.Patch.Repository;
         }
     }
 }

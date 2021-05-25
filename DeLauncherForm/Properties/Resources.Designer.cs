@@ -63,9 +63,9 @@ namespace DeLauncherForm.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.IO.UnmanagedMemoryStream, аналогичного System.IO.MemoryStream.
         /// </summary>
-        internal static System.IO.UnmanagedMemoryStream press1 {
+        internal static System.IO.UnmanagedMemoryStream press1_new {
             get {
-                return ResourceManager.GetStream("press1", resourceCulture);
+                return ResourceManager.GetStream("press1_new", resourceCulture);
             }
         }
         
@@ -84,6 +84,15 @@ namespace DeLauncherForm.Properties {
         internal static System.IO.UnmanagedMemoryStream press3 {
             get {
                 return ResourceManager.GetStream("press3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.IO.UnmanagedMemoryStream, аналогичного System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream press4 {
+            get {
+                return ResourceManager.GetStream("press4", resourceCulture);
             }
         }
     }

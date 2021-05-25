@@ -12,10 +12,13 @@ namespace DeLauncherForm
     {
         private static string[] rotrFiles = new string[] { "!!Rotr_Intrnl_AI", "!Rotr_Textures", "!!Rotr_Intrnl_Main", "!Rotr_Audio", "!Rotr_Maps", "!Rotr_Voice", "!!Rotr_Patch",
         "!Rotr_Blckr","!Rotr_Music","!Rotr_W3D","!Rotr_2D","!Rotr_English","!Rotr_Terrain","!Rotr_Window"};
-  
-        public static void SetROTRFiles(FormConfiguration conf)
+        private static string scriptPath = "Data\\Scripts\\";
+        private static string[] scbFiles = new string[] { scriptPath + "MultiplayerScripts", scriptPath + "SkirmishScripts", };
+        private static string[] iniFiles = new string[] { scriptPath + "Scripts"};
+
+        public static void SetGameFiles(FormConfiguration conf)
         {
-            Switch("gib", "big");
+            RenameROTRFiles();
 
             foreach (var exceptionFile in conf.Patch.ExceptionFiles)
             {
@@ -27,15 +30,16 @@ namespace DeLauncherForm
             RenameWindowFiles();
         }
 
-        public static void SetROTRFilesBack()
+        public static void SetGameFilesBack()
         {
-            Switch("big", "gib");
+            RenameROTRFilesBack();
             RenameScriptFilesBack();
             RenameWindowFilesBack();
-            RemoveBigs();
+            ConvertBigsToGibs();
         }
 
-        public static void RemoveBigs()
+        //Переименовать все big файлы известных патчей в gib
+        public static void ConvertBigsToGibs()
         {
             var filesBig = Directory.GetFiles(Directory.GetCurrentDirectory(), "*big");
 
@@ -52,7 +56,7 @@ namespace DeLauncherForm
                     //проходим по списку имен патчей
                     foreach (var patchFile in EntryPoint.KnownPatchTags)
                     {
-                        //если файл оказался известным патчем и НЕ является актуальным из actualPatch переименовываем его или удаляем                        
+                        //если файл оказался известным патчем переименовываем его или удаляем                        
                         if (fileBig.Contains(patchFile))
                         {
                             var file = fileBig.Substring(0, fileBig.Length - 4);
@@ -64,62 +68,115 @@ namespace DeLauncherForm
                     }
                 }
             }
+        }        
+
+        public static void ActivateFileByName(string FileName)
+        {
+            if (!File.Exists(FileName.Substring(0, FileName.Length - 3)))
+                File.Move(FileName, FileName.Substring(0, FileName.Length - 3) + "big");
         }
 
-        public static void RemoveOldVersions(FormConfiguration conf, PatchInfo actualPatch)
+        //Получить имена файлов последней версии патча в директории
+        public static IEnumerable<string> GetLatestPatchFileNames(Patch patch)
         {
-            if (conf.Patch is None)
-                return;
-
-            var filesBig = Directory.GetFiles(Directory.GetCurrentDirectory(), "*big");
-
-            //проходим по всем биг файлам
-            foreach (var bigFile in filesBig)
+            if (patch is Vanilla && File.Exists("!!Rotr_Intrnl_INI.gib") && File.Exists("!!Rotr_Intrnl_Eng.gib"))
             {
-                var fileAttributes = bigFile.Split('\\');
+                yield return "!!Rotr_Intrnl_INI.gib";
+                yield return "!!Rotr_Intrnl_Eng.gib";
+                yield break;
+            }
 
-                //отделяем имя файла без полного адреса в ОС
-                var fileBig = fileAttributes[fileAttributes.Length - 1];
+            var number = 0;
+            var previousPatchFile = "";
 
-                //если файл оказался актуальной версией, пропускаем итерацию                
-                if (actualPatch != null && CheckFileNameForNameMatch(fileBig, actualPatch))
-                    continue;
-
-                if (fileBig[0] == '!')
+            foreach (var patchFile in GetPatchFileNames(patch))
+            {
+                var tempNumber = GetVersionNumberFromPatchName(patchFile);
+                if (tempNumber > number)
                 {
-                    //проходим по списку имен патчей
-                    foreach (var patchFile in EntryPoint.KnownPatchTags)
-                    {
-                        //если файл оказался известным патчем и НЕ является актуальным из actualPatch переименовываем его или удаляем                        
-                        if (fileBig.Contains(patchFile))
-                        {
-                            var file = fileBig.Substring(0, fileBig.Length - 4);
-                            if (File.Exists(file + ".gib"))
-                                File.Delete(fileBig);
-                            else
-                                File.Move(fileBig, file + ".gib");
-                        }
-                    }
+                    previousPatchFile = patchFile;
+                    number = tempNumber;
                 }
             }
-        }     
 
-        //рефакторинг, сделать метод универсальным
-        public static bool GetCurrentVersionNumberFromGib(PatchInfo actualPatch, bool deleteOldVersions)
-        {
+            yield return previousPatchFile;
+        }
+
+        //Определить существует ли файл патча в директории
+        public static bool CheckPatchFileExist(Patch patch)
+        {           
             //отдельный кейс для ваниллы
-            if (actualPatch.Patch is Vanilla && File.Exists("!!Rotr_Intrnl_INI.gib") && File.Exists("!!Rotr_Intrnl_Eng.gib"))
+            if (patch is Vanilla && File.Exists("!!Rotr_Intrnl_INI.gib") && File.Exists("!!Rotr_Intrnl_Eng.gib"))
             {
-                File.Move("!!Rotr_Intrnl_INI.gib", "!!Rotr_Intrnl_INI.big");
-                File.Move("!!Rotr_Intrnl_Eng.gib", "!!Rotr_Intrnl_Eng.big");
                 return true;
             }
             else
-                if (actualPatch.Patch is Vanilla)
+                if (patch is Vanilla)
                 return false;
 
-            //кейс для других патчей
+            foreach (var patchFile in GetPatchFileNames(patch))
+                if (CheckFileNameForNameMatch(patchFile, patch))
+                    return true;
+
+            return false;
+        }
+
+        //Получить номер последней версии патча в директории
+        public static int GetCurrentVersionNumber(Patch patch)
+        {
+            //отдельный кейс для ваниллы
+            if (patch is Vanilla && File.Exists("!!Rotr_Intrnl_INI.gib") && File.Exists("!!Rotr_Intrnl_Eng.gib"))
+            {
+                return 18720;
+            }
+            else if (patch is Vanilla)
+                return 0;
+
+
+
+            var number = 0;
+
+            foreach (var patchFile in GetPatchFileNames(patch))
+            {
+                var tempNumber = GetVersionNumberFromPatchName(patchFile);
+                if (tempNumber > number)
+                    number = tempNumber; 
+            }
+
+            return number;
+        }
+
+        //Удалить все устаревшие файлы патчей
+        public static void DeleteAllOldPatchFiles(Patch patch)
+        {
+            //отдельный кейс для ваниллы
+            if (patch is Vanilla)
+                return;
+
+            foreach (var f in GetPatchFileNames(patch))
+            {
+                File.Delete(f);
+            }                     
+        }
+
+        public static void DeleteAllPatchFiles(Patch patch)
+        {
+            //отдельный кейс для ваниллы
+            if (patch is Vanilla)
+                return;
+
+            foreach (var patchFile in Directory.GetFiles(Directory.GetCurrentDirectory(), "*gib").Concat(Directory.GetFiles(Directory.GetCurrentDirectory(), "*big")))
+            {
+                if (patchFile.Contains("HP") || patchFile.Contains("BP"))
+                File.Delete(patchFile);
+            }
+        }
+
+        //Получить коллекцию имён файлов патчей
+        public static IEnumerable<string> GetPatchFileNames(Patch patch)
+        {
             var filesGib = Directory.GetFiles(Directory.GetCurrentDirectory(), "*gib");
+
             //проходим по всем файлам гиб директории
             foreach (var gibFile in filesGib)
             {
@@ -128,24 +185,30 @@ namespace DeLauncherForm
                 //отделяем имя файла без полного адреса в ОС
                 var fileGib = fileAttributes[fileAttributes.Length - 1];
 
-                if (CheckFileNameForNameMatch(fileGib, actualPatch))
+                if (CheckFileNameForNameMatch(fileGib, patch))
                 {
-                    var number = GetVersionNumberFromPatchName(fileGib);
-                    if (number == actualPatch.Patch.PatchVersion)
-                    {
-                        var file = fileGib.Substring(0, fileGib.Length - 4);
-                        if (!File.Exists(file + ".big"))
-                            File.Move(fileGib, file + ".big");
-                        return true;
-                    }
-                    else
-                        if (deleteOldVersions && File.Exists(fileGib))
-                            File.Delete(fileGib);
-                }                
-            }           
-            return false;
+                    yield return (fileGib);
+                }
+            }
         }
-        
+
+        public static IEnumerable<string> GetPatchFileNames()
+        {
+            var filesGib = Directory.GetFiles(Directory.GetCurrentDirectory(), "*gib");
+
+            //проходим по всем файлам гиб директории
+            foreach (var gibFile in filesGib)
+            {
+                var fileAttributes = gibFile.Split('\\');
+
+                //отделяем имя файла без полного адреса в ОС
+                var fileGib = fileAttributes[fileAttributes.Length - 1];
+
+                if (fileGib.Contains("HP") || fileGib.Contains("BP"))
+                  yield return fileGib;
+            }
+        }
+
         public static void ClearTempFiles()
         {
             var files = Directory.GetFiles(Directory.GetCurrentDirectory(), "*temp");
@@ -167,42 +230,37 @@ namespace DeLauncherForm
             return int.Parse(number);
         }
 
+        private static void RenameROTRFiles()
+        {
+            Switch(rotrFiles, "gib", "big");
+        }
+
+        private static void RenameROTRFilesBack()
+        {
+            Switch(rotrFiles, "big", "gib");
+        }
+
         private static void RenameScriptFiles()
         {
-            var path = "Data\\Scripts\\";
-            if (File.Exists(path + "MultiplayerScripts.scb"))
-                File.Move(path + "MultiplayerScripts.scb", path + "MultiplayerScripts.nope");
-
-            if (File.Exists(path + "Scripts.ini"))
-                File.Move(path + "Scripts.ini", path + "Scripts.nope");
-
-            if (File.Exists(path + "SkirmishScripts.scb"))
-                File.Move(path + "SkirmishScripts.scb", path + "SkirmishScripts.nope");
+            Switch(scbFiles, "scb", "nope");
+            Switch(iniFiles, "ini", "nope");
         }
 
         private static void RenameScriptFilesBack()
         {
-            var path = "Data\\Scripts\\";
-            if (File.Exists(path + "MultiplayerScripts.nope"))
-                File.Move(path + "MultiplayerScripts.nope", path + "MultiplayerScripts.scb");
-
-            if (File.Exists(path + "Scripts.nope"))
-                File.Move(path + "Scripts.nope", path + "Scripts.ini");
-
-            if (File.Exists(path + "SkirmishScripts.nope"))
-                File.Move(path + "SkirmishScripts.nope", path + "SkirmishScripts.scb");
-
-            //можно удалить через некоторое время 01.09.20, фикс опечатки
-            if (File.Exists(path + "SkirmishScripts.ini"))
-                File.Move(path + "SkirmishScripts.ini", path + "SkirmishScripts.scb");
+            Switch(scbFiles, "nope", "scb");
+            Switch(iniFiles, "nope", "ini");
         }
 
-        private static void Switch(string from, string to)
+        private static void Switch(string[] source, string from, string to)
         {
-            foreach (var file in rotrFiles)
+            foreach (var file in source)
             {
-                if (File.Exists(file + "." + from))
+                if (File.Exists(file + "." + from) && !File.Exists(file + "." + to))
                     File.Move(file + "." + from, file + "." + to);
+                else
+                    if (File.Exists(file + "." + to))
+                      File.Delete(file + "." + from);
             }            
         }
         private static void RenameWindowFiles()
@@ -218,8 +276,14 @@ namespace DeLauncherForm
 
             if (File.Exists("Install_Final.bmp") && File.Exists("Install_Final_rotr.bmp"))
             {
-                File.Move("Install_Final.bmp", "Install_Final.bmp_temp");
-                File.Move("Install_Final_rotr.bmp", "Install_Final.bmp");
+                //Сохранить ZH скрин, если он уже сохранён, то просто удалить текущий(Final)
+                if (!File.Exists("Install_Final_zh.bmp"))
+                    File.Move("Install_Final.bmp", "Install_Final_zh.bmp");
+                else
+                    File.Delete("Install_Final.bmp");
+
+               //Установить ROTR скрин
+               File.Move("Install_Final_rotr.bmp", "Install_Final.bmp");
             }
         }
 
@@ -233,16 +297,24 @@ namespace DeLauncherForm
                 File.Move("00000000.016_temp", "00000000.016");
                 File.Move("00000000.256_temp", "00000000.256");
             }
-            if (File.Exists("Install_Final.bmp") && File.Exists("Install_Final.bmp_temp"))
+
+            if (File.Exists("Install_Final.bmp") && File.Exists("Install_Final_zh.bmp"))
             {
-                File.Move("Install_Final.bmp", "Install_Final_rotr.bmp");
-                File.Move("Install_Final.bmp_temp", "Install_Final.bmp");                
+                //Сохранить ROTR скрин, если он уже есть, то просто удалить текущий(Final)
+                if (!File.Exists("Install_Final_rotr.bmp"))
+                    File.Move("Install_Final.bmp", "Install_Final_rotr.bmp");
+                else
+                    File.Delete("Install_Final.bmp");
+
+                //Установить ZH скрин
+                File.Move("Install_Final_zh.bmp", "Install_Final.bmp");
             }
         }
 
-        private static bool CheckFileNameForNameMatch(string fileName, PatchInfo actualPatch)
+        //Определить что файл относится к файлу патча
+        private static bool CheckFileNameForNameMatch(string fileName, Patch patch)
         {
-            foreach (var actualVersionFiles in actualPatch.Patch.PatchTags)
+            foreach (var actualVersionFiles in patch.PatchTags)
                 if (fileName.Contains(actualVersionFiles))
                     return true;
             return false;

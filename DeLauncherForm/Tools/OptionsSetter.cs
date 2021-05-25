@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Net.Http;
@@ -19,6 +17,7 @@ namespace DeLauncherForm
             {
                 await LoadContent("p0ls3r/d3d8");
             }
+            
 
             if (options.FixFile && (options.Gentool == GentoolsMode.AutoUpdate || File.Exists("d3d8.dll")))
             {
@@ -30,6 +29,9 @@ namespace DeLauncherForm
             {
                 if (File.Exists("d3d8x.dll"))
                     File.Move("d3d8x.dll", "d3d8to9.dll");
+
+                if (File.Exists("d3d8to9.dll"))
+                    File.Move("d3d8to9.dll", "d3d8.dll");
             }
 
             if (!options.FixFile)
@@ -38,6 +40,8 @@ namespace DeLauncherForm
                     File.Delete("d3d8to9.dll");
                 if (File.Exists("d3d8x.dll"))
                     File.Delete("d3d8x.dll");
+                if (File.Exists("d3d8.dll") && options.Gentool == GentoolsMode.Disable)
+                    File.Delete("d3d8.dll");
             }
 
             if (options.DebugFile && File.Exists("dbghelp.dll"))
@@ -54,9 +58,10 @@ namespace DeLauncherForm
                 if ((string)parsedData["type"] == "file")
                 {
                     var downloadUrl = (string)parsedData["download_url"];
-                    var fileName = (string)parsedData["name"];
+                    var fileName = (string)parsedData["name"]+"temp";
 
-                    await DownLoad(downloadUrl, fileName);                    
+                    await DownLoad(downloadUrl, fileName);
+                    File.Move(fileName, fileName.Substring(0, fileName.Length - 4));
                 }
             }
         }

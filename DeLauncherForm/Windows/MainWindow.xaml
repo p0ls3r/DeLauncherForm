@@ -8,33 +8,35 @@
         Title="DeLauncher" Height="600.000" Width="800.000" WindowStyle="None" ResizeMode="NoResize">
 
     <Window.Background>
-        <ImageBrush ImageSource="Resources/Main/base.png"/>
+        <ImageBrush  ImageSource="Resources/Main/base.png"/>
     </Window.Background>
 
     <Grid>
+        <Image x:Name="BackGrondImage2" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="800" Source="/Windows/Resources/Main/base2.png" Visibility="Hidden"/>
+
         <Image x:Name="InfoAll" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="800"/>
 
         <Button x:Name="launch" Width="140" Margin="596,65,65,498"  >
-            <Image x:Name="launchSource" Stretch="Fill" Margin="-3,-3,-3,-3"/>
+            <Image x:Name="launchSource" Stretch="Fill" Margin="-3,-3,-1,-2"/>
         </Button>
 
-        <Button x:Name="WorldBuilder" Margin="596,136,65,428" >
-            <Image x:Name="WorldbuilderSource" Stretch="Fill" Margin="-3,-3,-3,-3" />
+        <Button x:Name="WorldBuilder" Margin="596,137,65,428" >
+            <Image x:Name="WorldbuilderSource" Stretch="Fill" Margin="-2,-3,-3,-3" />
         </Button>
 
-        <Button x:Name="QuickStart"  Margin="596,207,65,357">
+        <Button x:Name="QuickStart"  Margin="596,208,65,357">
             <Image x:Name="QuickStartSource"  Stretch="Fill" Margin="-3,-3,-3,-3"/>
         </Button>
 
-        <Button x:Name="Windowed"  Margin="596,278,65,286" >
+        <Button x:Name="Windowed"  Margin="596,279,65,286" >
             <Image x:Name="WindowedSource"  Stretch="Fill" Margin="-3,-3,-3,-3"/>
         </Button>
 
-        <Button x:Name="Exit"  Margin="596,352,65,212" >
+        <Button x:Name="Exit"  Margin="596,353,65,212" >
             <Image x:Name="ExitSource"  Stretch="Fill" Margin="-3,-3,-3,-3"/>
         </Button>
 
-        <Button x:Name="BP"  Margin="572,485,133,73" >
+        <Button x:Name="BP"  Margin="572,485,133,73"  >
             <Image x:Name="BPSource"  Stretch="Fill" Margin="-3,-3,-3,-3"/>
         </Button>
 
@@ -87,9 +89,11 @@
 
         <Image x:Name="ShtoraVanilla" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" Width="40" Margin="69,484,0,0" Source="/Windows/Resources/Main/shtora.png" />
 
+        <Image x:Name="ShtoraManual" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" Width="40" Margin="69,434,0,0" Source="/Windows/Resources/Main/shtora.png" />
+
         <Image HorizontalAlignment="Left" Height="228" Margin="52,52,0,0" VerticalAlignment="Top" Width="425" Source="/Windows/Resources/Main/frame.png" Stretch="Fill" Panel.ZIndex="10" />
 
-        <local:GifImage x:Name="gifImage" Stretch="None" Margin="52,52,323,320" Height="Auto" Width="Auto"  />
+        <local:GifImage x:Name="gifImage" Stretch="None" Margin="52,52,323,320" Height="Auto" Width="Auto"/>
 
         <Button x:Name="Eng" HorizontalAlignment="Left" Opacity="0" Margin="128,304,0,0" VerticalAlignment="Top" Width="40" Height="37"/>
 
@@ -101,6 +105,47 @@
 
         <Image HorizontalAlignment="Left" Height="27" Margin="183,369,0,204" Width="100" Source="/Windows/Resources/Main/trans.png" Opacity="0.3"/>
         <Image x:Name="NoInternet" Margin="52,52,323,320" Source="/Windows/Resources/Main/nointernet_e.png"/>
+
+        <Button x:Name="ManualFileSelect"  Margin="118,435,522,123" >
+            <Image x:Name="ManualFileSelectSource"  Stretch="Fill" Margin="-3,-3,-3,-3"/>
+        </Button>
+
+        <ListBox x:Name="FilesList" HorizontalAlignment="Left" Height="87" Margin="345,437,0,0" VerticalAlignment="Top" Width="383" Background="Black" BorderBrush="Black">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="2"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+
+
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="Margin" Value="0.5"/>
+                    <Setter Property="Background" Value="DarkKhaki"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                <Border x:Name="brd" Background="{TemplateBinding Background}" 
+                                            BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                    <CheckBox Focusable="False" Margin="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}"
+                                                     IsChecked="{Binding Path=IsSelected, RelativeSource={RelativeSource TemplatedParent},Mode=TwoWay}">
+                                        <ContentPresenter/>
+                                    </CheckBox>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="Red"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="BorderThickness" Value="1"/>
+                                        <Setter Property="BorderBrush" Value="Black"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
 
     </Grid>
 </Window>

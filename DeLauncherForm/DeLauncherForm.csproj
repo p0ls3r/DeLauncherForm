@@ -83,6 +83,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Tools\ImageHandler.cs" />
+    <Compile Include="Tools\IPChecker.cs" />
     <Compile Include="Tools\LaunchOptions.cs" />
     <Compile Include="Tools\OptionsSetter.cs" />
     <Compile Include="Tools\RotrInstallChecker.cs" />
@@ -158,6 +159,7 @@
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.manifest" />
@@ -328,9 +330,6 @@
     <Resource Include="resources\press2.wav" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="resources\press1.wav" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Windows\Resources\Main\trans.png" />
   </ItemGroup>
   <ItemGroup>
@@ -364,6 +363,29 @@
   <ItemGroup>
     <Resource Include="Windows\Resources\PressedButtons\CURRENTVERSION.png" />
     <Resource Include="Windows\Resources\PressedButtons\PRESS 2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\.LauncherFolder\press1_new.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\press1_new.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\Main\base2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\PressedButtons\MANUAL 2.png" />
+    <Resource Include="Windows\Resources\PressedButtons\MANUAL PYC 2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\UnpressedButtons\MANUAL PYC.png" />
+    <Resource Include="Windows\Resources\UnpressedButtons\MANUAL.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Windows\Resources\Main\trans2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\press4.wav" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

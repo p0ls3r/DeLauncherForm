@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net;
 using System.IO;
-using System.Web.Script.Serialization;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace DeLauncherForm
@@ -28,7 +28,7 @@ namespace DeLauncherForm
 
             var contentsJson = httpClient.GetStringAsync(contentsUrl).GetAwaiter().GetResult();
 
-            dynamic contents = new JavaScriptSerializer().DeserializeObject(contentsJson);
+            dynamic contents = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(contentsJson);
 
             foreach (var data in contents)
             {
@@ -67,7 +67,7 @@ namespace DeLauncherForm
 
             var contentsJson = httpClient.GetStringAsync(contentsUrl).GetAwaiter().GetResult();
 
-            dynamic contents = new JavaScriptSerializer().DeserializeObject(contentsJson);
+            dynamic contents = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(contentsJson);
 
             using (WebClient client = new WebClient())
             {
